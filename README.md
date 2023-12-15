@@ -55,11 +55,6 @@ O Linkedingpt é um script Python avançado projetado para automatizar postagens
 
 - Postagens regulares e de qualidade são fundamentais para manter e aumentar o engajamento na rede, o que pode ser benéfico tanto para perfis pessoais quanto empresariais.
 
-## Conclusão
-
-- Este script representa uma poderosa ferramenta de automação para profissionais e empresas que buscam manter uma presença ativa e relevante no LinkedIn, maximizando o alcance e engajamento com um investimento mínimo de tempo e esforço manual.
-
-
 ## Pré-requisitos
 
 Antes de iniciar, certifique-se de que as seguintes ferramentas e bibliotecas estejam instaladas em seu sistema:
@@ -164,6 +159,10 @@ Após a execução, o bot do Telegram estará ativo e responderá aos seguintes 
 - `/start`: Inicia a interação com o bot.
 - Comandos adicionais para solicitar informações das APIs do Azure e LinkedIn.
 - **Interagir via Telegram**: Use os comandos no chat do Telegram para selecionar feeds, gerar resumos e postar no LinkedIn.
+
+## Conclusão
+
+- Este script representa uma poderosa ferramenta de automação para profissionais e empresas que buscam manter uma presença ativa e relevante no LinkedIn, maximizando o alcance e engajamento com um investimento mínimo de tempo e esforço manual.
 
 ## Créditos
 - Desenvolvido por Renan Besserra
