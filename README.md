@@ -107,22 +107,13 @@ Este comando instalará todas as bibliotecas listadas no arquivo `requirements.t
 2. **Configure as permissões da aplicação**: Na configuração da sua aplicação, defina as permissões necessárias para o escopo da API.
 3. **Autentique e Obtenha o Access Token**: Use o fluxo de autenticação OAuth 2.0 do LinkedIn para autenticar e obter o Access Token.
 
-## Configuração
-
-O script requer a instalação de várias bibliotecas Python. Para instalar estas dependências, entre na pasta do repositorio clonado e execute o seguinte comando no terminal:
-
-```
-pip install -r requirements.txt
-```
-Este comando instalará todas as bibliotecas listadas no arquivo `requirements.txt` do repositório.
-
 ## Configuração de Variáveis e Tokens
 
 Você precisará configurar diversas variáveis e tokens para as APIs do Telegram, Azure OpenAI e LinkedIn.
 
 ### Azure OpenAI
 
-Altere as variáveis de configuração do Azure OpenAI com seus próprios valores de API:
+Altere as variáveis de configuração do Azure OpenAI com seus próprios valores de API no script linkedinautopost.py:
 
 ```python
 openai.api_base = "SEU_AZURE_API_BASE"
@@ -149,7 +140,7 @@ ACCESS_TOKEN = "SEU_ACCESS_TOKEN"
 Com as dependências instaladas e as variáveis configuradas, você está pronto para executar o script. Para iniciar, execute o seguinte comando no terminal:
 
 ```
-python linkedinautopost.py
+python3 linkedinautopost.py
 ```
 
 Lembre-se de manter o script em execução para que o bot permaneça ativo.
