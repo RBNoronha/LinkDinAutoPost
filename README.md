@@ -2,11 +2,11 @@
 # Linkedinautopost Bot: Script de Automação para Notícias e Postagens no LinkedIn
 
 
-## Descrição
+## Descrição:
 
 O Linkedingpt é um script Python avançado projetado para automatizar postagens no LinkedIn utilizando feeds RSS, Azure OpenAI com GPT-4 para geração de resumos, API do Telegram e a API do LinkedIn para publicações. Ideal para profissionais que desejam manter uma presença ativa no LinkedIn com conteúdo atualizado e relevante.
 
-## Funcionalidades
+## Funcionalidades:
 
 ### Coleta de Notícias de Fontes RSS:
 
@@ -31,27 +31,27 @@ O Linkedingpt é um script Python avançado projetado para automatizar postagens
 
 ## Vantagens do Uso do Script
 
-### Eficiência e Economia de Tempo
+### Eficiência e Economia de Tempo:
 
 - Automatizar a coleta e postagem de notícias poupa um tempo significativo que, de outra forma, seria gasto na pesquisa manual e na formatação de postagens.
 
-### Atualização Contínua
+### Atualização Contínua:
 
 - O script permite manter um fluxo constante de conteúdo, o que é essencial para manter o engajamento na plataforma do LinkedIn.
 
-### Alcance e Relevância Ampliados
+### Alcance e Relevância Ampliados:
 
 - Com a capacidade de traduzir e resumir notícias de diferentes regiões e idiomas, o script amplia o alcance das postagens, tornando-as acessíveis e relevantes para um público mais amplo.
 
-### Personalização e Precisão
+### Personalização e Precisão:
 
 - Assegura a qualidade e relevância do conteúdo com o auxílio de IA.
 
-### Flexibilidade e Controle
+### Flexibilidade e Controle:
 
 - Integração com Telegram oferece controle adicional sobre as postagens.
 
-### Melhoria de Engajamento no LinkedIn
+### Melhoria de Engajamento no LinkedIn:
 
 - Postagens regulares e de qualidade são fundamentais para manter e aumentar o engajamento na rede, o que pode ser benéfico tanto para perfis pessoais quanto empresariais.
 
@@ -63,14 +63,14 @@ Antes de iniciar, certifique-se de que as seguintes ferramentas e bibliotecas es
 - pip (gerenciador de pacotes Python)
 - Acesso às APIs do Azure OpenAI, Telegram e LinkedIn
 
-## Clone o Repositorio
+## Clone o Repositorio:
 
 ```
 git clone https://github.com/RBNoronha/LinkDinAutoPost.git
 cd LinkDinAutoPost/
 ```
 
-## Instalação de Dependências
+## Instalação de Dependências:
 
 O script requer a instalação de várias bibliotecas Python. Para instalar estas dependências, execute o seguinte comando no terminal:
 
@@ -84,7 +84,7 @@ Este comando instalará todas as bibliotecas listadas no arquivo `requirements.t
 
 ## Azure OpenAI
 
-### Como Obter a API Key do Azure OpenAI
+### Como Obter a API Key do Azure OpenAI:
 
 1. **Crie uma conta no Azure**: Se ainda não tiver uma, [crie sua conta no Azure](https://azure.microsoft.com/pt-br/free/).
 2. **Acesse o Portal do Azure**: Faça login no [portal do Azure](https://portal.azure.com/).
@@ -93,7 +93,7 @@ Este comando instalará todas as bibliotecas listadas no arquivo `requirements.t
 
 ## Telegram Bot API
 
-### Como Criar um Bot e Obter o Token do Telegram
+### Como Criar um Bot e Obter o Token do Telegram:
 
 1. **Inicie uma conversa com o BotFather**: No Telegram, procure por “BotFather” e inicie uma conversa.
 2. **Crie um novo bot**: Digite `/newbot` e siga as instruções para criar seu bot.
@@ -101,7 +101,7 @@ Este comando instalará todas as bibliotecas listadas no arquivo `requirements.t
 
 ## LinkedIn API
 
-### Como Obter o Access Token do LinkedIn
+### Como Obter o Access Token do LinkedIn:
 
 1. **Crie uma Aplicação no LinkedIn Developer Portal**: Acesse o [LinkedIn Developer Portal](https://www.linkedin.com/developers/) e crie uma nova aplicação.
 2. **Configure as permissões da aplicação**: Na configuração da sua aplicação, defina as permissões necessárias para o escopo da API.
@@ -111,7 +111,7 @@ Este comando instalará todas as bibliotecas listadas no arquivo `requirements.t
 
 Você precisará configurar diversas variáveis e tokens para as APIs do Telegram, Azure OpenAI e LinkedIn.
 
-### Azure OpenAI
+### Azure OpenAI:
 
 Altere as variáveis de configuração do Azure OpenAI com seus próprios valores de API no script linkedinautopost.py:
 
@@ -133,6 +133,46 @@ Para a API do LinkedIn, configure o token de acesso:
 
 ```python
 ACCESS_TOKEN = "SEU_ACCESS_TOKEN"
+```
+
+### Caso queira usar a API da OpenAI, altere a logica abaixo:
+
+```python
+try:
+        set_openai_config(RBLN_API_BASE, RBLN_API_KEY)
+        response = openai.ChatCompletion.create(
+            engine="gpt-4-32k", messages=messages, temperature=0.5
+        )
+    except Exception as e:
+        print(f"Erro com API OpenAI Primaria: {e}")
+        print("Alterando para API OpenAI Secundaria..")
+        set_openai_config(RBPS_API_BASE, RBPS_API_KEY)
+        response = openai.ChatCompletion.create(
+            engine="gpt-4-32k", messages=messages, temperature=0.5
+        )
+    summary = response["choices"][0]["message"]["content"]
+    return summary
+```
+
+Para integrar corretamente o script à API da OpenAI, é necessário atualizar a configuração da variável openai.api_key com o seu token de acesso pessoal fornecido pela OpenAI. Após esta atualização, substitua a lógica existente no script citada acima pela seguinte estrutura de código:
+
+```python
+def comunicar_com_openai(messages):
+    try:
+        # Realizar a chamada para a API da OpenAI
+        response = openai.ChatCompletion.create(
+            model="gpt-4.5-turbo",  # Atualize para o modelo mais recente disponível
+            messages=messages,
+            temperature=0.5
+        )
+    except Exception as e:
+        print(f"Erro com API OpenAI: {e}")
+        # Aqui você pode adicionar qualquer lógica adicional para lidar com falhas
+        return None
+
+    # Extrair e retornar o conteúdo da resposta
+    summary = response["choices"][0]["message"]["content"]
+    return summary
 ```
 
 ## Execução do Script
