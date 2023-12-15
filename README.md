@@ -63,6 +63,13 @@ Antes de iniciar, certifique-se de que as seguintes ferramentas e bibliotecas es
 - pip (gerenciador de pacotes Python)
 - Acesso às APIs do Azure OpenAI, Telegram e LinkedIn
 
+## Clone o Repositorio
+
+```
+git clone https://github.com/RBNoronha/LinkDinAutoPost.git
+cd LinkDinAutoPost/
+```
+
 ## Instalação de Dependências
 
 O script requer a instalação de várias bibliotecas Python. Para instalar estas dependências, execute o seguinte comando no terminal:
@@ -99,12 +106,6 @@ Este comando instalará todas as bibliotecas listadas no arquivo `requirements.t
 1. **Crie uma Aplicação no LinkedIn Developer Portal**: Acesse o [LinkedIn Developer Portal](https://www.linkedin.com/developers/) e crie uma nova aplicação.
 2. **Configure as permissões da aplicação**: Na configuração da sua aplicação, defina as permissões necessárias para o escopo da API.
 3. **Autentique e Obtenha o Access Token**: Use o fluxo de autenticação OAuth 2.0 do LinkedIn para autenticar e obter o Access Token.
-
-## Clone o Repositorio
-
-```
-git clone https://github.com/RBNoronha/LinkDinAutoPost.git
-```
 
 ## Configuração
 
