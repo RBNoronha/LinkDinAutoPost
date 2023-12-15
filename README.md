@@ -68,6 +68,16 @@ Antes de iniciar, certifique-se de que as seguintes ferramentas e bibliotecas es
 - pip (gerenciador de pacotes Python)
 - Acesso às APIs do Azure OpenAI, Telegram e LinkedIn
 
+## Instalação de Dependências
+
+O script requer a instalação de várias bibliotecas Python. Para instalar estas dependências, execute o seguinte comando no terminal:
+
+```
+pip install -r requirements.txt
+```
+
+Este comando instalará todas as bibliotecas listadas no arquivo `requirements.txt` do seu repositório.
+
 # Guia Detalhado para Obtenção de APIs de Configuração
 
 ## Azure OpenAI
@@ -94,6 +104,21 @@ Antes de iniciar, certifique-se de que as seguintes ferramentas e bibliotecas es
 1. **Crie uma Aplicação no LinkedIn Developer Portal**: Acesse o [LinkedIn Developer Portal](https://www.linkedin.com/developers/) e crie uma nova aplicação.
 2. **Configure as permissões da aplicação**: Na configuração da sua aplicação, defina as permissões necessárias para o escopo da API.
 3. **Autentique e Obtenha o Access Token**: Use o fluxo de autenticação OAuth 2.0 do LinkedIn para autenticar e obter o Access Token.
+
+## Clone o Repositorio
+
+```
+git clone https://github.com/RBNoronha/LinkDinAutoPost.git
+```
+
+## Configuração
+
+O script requer a instalação de várias bibliotecas Python. Para instalar estas dependências, entre na pasta do repositorio clonado e execute o seguinte comando no terminal:
+
+```
+pip install -r requirements.txt
+```
+Este comando instalará todas as bibliotecas listadas no arquivo `requirements.txt` do repositório.
 
 ## Configuração de Variáveis e Tokens
 
@@ -123,15 +148,15 @@ Para a API do LinkedIn, configure o token de acesso:
 ACCESS_TOKEN = "SEU_ACCESS_TOKEN"
 ```
 
-## Instalação de Dependências
+## Execução do Script
 
-O script requer a instalação de várias bibliotecas Python. Para instalar estas dependências, execute o seguinte comando no terminal:
+Com as dependências instaladas e as variáveis configuradas, você está pronto para executar o script. Para iniciar, execute o seguinte comando no terminal:
 
 ```
-pip install -r requirements.txt
+python linkedinautopost.py
 ```
 
-Este comando instalará todas as bibliotecas listadas no arquivo `requirements.txt` do seu repositório.
+Lembre-se de manter o script em execução para que o bot permaneça ativo.
 
 ## Comandos do Bot
 
@@ -139,8 +164,6 @@ Após a execução, o bot do Telegram estará ativo e responderá aos seguintes 
 - `/start`: Inicia a interação com o bot.
 - Comandos adicionais para solicitar informações das APIs do Azure e LinkedIn.
 - **Interagir via Telegram**: Use os comandos no chat do Telegram para selecionar feeds, gerar resumos e postar no LinkedIn.
-
-Lembre-se de manter o script em execução para que o bot permaneça ativo.
 
 ## Créditos
 - Desenvolvido por Renan Besserra
