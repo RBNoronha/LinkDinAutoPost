@@ -1,0 +1,7 @@
+
+# Exemplo de arquivo requirements.txt para instalação de módulos Python
+
+flask==2.0.1
+requests>=2.25.1
+numpy==1.20.3
+pandas>=1.2.4
