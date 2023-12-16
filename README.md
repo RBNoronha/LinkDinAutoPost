@@ -4,7 +4,7 @@
 
 ## Descrição:
 
-O Linkedingpt é um script Python avançado projetado para automatizar postagens no LinkedIn utilizando feeds RSS, Azure OpenAI com GPT-4 para geração de resumos, API do Telegram e a API do LinkedIn para publicações. Ideal para profissionais que desejam manter uma presença ativa no LinkedIn com conteúdo atualizado e relevante.
+O Linkedinautopost é um script Python avançado projetado para automatizar postagens no LinkedIn utilizando feeds RSS, Azure OpenAI com GPT-4 para geração de resumos, API do Telegram e a API do LinkedIn para publicações. Ideal para profissionais que desejam manter uma presença ativa no LinkedIn com conteúdo atualizado e relevante.
 
 ## Funcionalidades:
 
