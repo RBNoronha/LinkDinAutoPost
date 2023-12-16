@@ -52,7 +52,7 @@ ACCESS_TOKEN = "YOUR_ACCESS_TOKEN"
 
 # URLs dos feeds RSS
 feed_urls = {
-    "/startcustomblog": "https://techcommunity.microsoft.com/plugins/custom/microsoft/o365/custom-blog-rss?tid=-177205926965371099&size=50",
+    "/startcustomblog": "https://techcommunity.microsoft.com/plugins/custom/microsoft/o365/custom-blog-rss?tid=-177205926965371099&size=100",
     "/startinfrastructure": "https://techcommunity.microsoft.com/plugins/custom/microsoft/o365/custom-blog-rss?tid=5272649121701694560&board=CoreInfrastructureandSecurityBlog&size=25",
     "/startazureaiservices": "https://techcommunity.microsoft.com/plugins/custom/microsoft/o365/custom-blog-rss?tid=3287690017842470215&board=Azure-AI-Services-blog&size=25",
     "/startmicrosoft365": "https://techcommunity.microsoft.com/plugins/custom/microsoft/o365/custom-blog-rss?tid=-7424720648213528660&board=microsoft_365blog&size=25",
@@ -185,7 +185,9 @@ headers = {"Authorization": f"Bearer {ACCESS_TOKEN}"}
 me_response = requests.get(ME_RESOURCE, headers=headers)
 
 if "id" not in me_response.json():
-    raise Exception("Erro ao obter o perfil do LinkedIn. Verifique o se o token de acesso não está expirado.")
+    raise Exception(
+        "Erro ao obter o perfil do LinkedIn. Verifique o se o token de acesso não está expirado."
+    )
 
 
 # Função para postar no LinkedIn usando a API
@@ -784,16 +786,32 @@ def on_callback_query(msg):
 
         for i, article in enumerate(articles):
             try:
+                # Traduzindo o título
                 translated_title = translator.translate(article.title, dest="pt").text
+
+                # Verificando e formatando a data de publicação
+                if hasattr(article, "published_parsed"):
+                    publication_date = time.strftime(
+                        "%d/%m/%Y", article.published_parsed
+                    )
+                    message = (
+                        f"{i+1}. {translated_title} (Publicado em: {publication_date})"
+                    )
+                else:
+                    # Se a data de publicação não estiver disponível
+                    message = f"{i+1}. {translated_title}"
+
+                bot.sendMessage(from_id, message)
+
             except TypeError:
-                translated_title = "Erro na tradução do título"
-            bot.sendMessage(from_id, f"{i+1}. {translated_title}")
+                bot.sendMessage(from_id, f"{i+1}. Erro na tradução do título")
 
         bot.sendMessage(
             from_id,
             "*Por favor, indique a notícia que deseja resumir informando o número correspondente.*",
             parse_mode="markdown",
         )
+
     else:
         bot.answerCallbackQuery(query_id, text="Erro ao processar feed RSS.")
 
