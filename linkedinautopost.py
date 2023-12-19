@@ -52,7 +52,7 @@ ACCESS_TOKEN = "YOUR_ACCESS_TOKEN"
 
 # URLs dos feeds RSS
 feed_urls = {
-    "/startcustomblog": "https://techcommunity.microsoft.com/plugins/custom/microsoft/o365/custom-blog-rss?tid=-177205926965371099&size=50",
+    "/startcustomblog": "https://techcommunity.microsoft.com/plugins/custom/microsoft/o365/custom-blog-rss?tid=-177205926965371099&size=100",
     "/startinfrastructure": "https://techcommunity.microsoft.com/plugins/custom/microsoft/o365/custom-blog-rss?tid=5272649121701694560&board=CoreInfrastructureandSecurityBlog&size=25",
     "/startazureaiservices": "https://techcommunity.microsoft.com/plugins/custom/microsoft/o365/custom-blog-rss?tid=3287690017842470215&board=Azure-AI-Services-blog&size=25",
     "/startmicrosoft365": "https://techcommunity.microsoft.com/plugins/custom/microsoft/o365/custom-blog-rss?tid=-7424720648213528660&board=microsoft_365blog&size=25",
@@ -70,6 +70,10 @@ feed_urls = {
     "/appsonazureblog": "https://techcommunity.microsoft.com/plugins/custom/microsoft/o365/custom-blog-rss?tid=-5120206136278231098&board=AppsonAzureBlog&size=25",
     "/windowsitpro": "https://techcommunity.microsoft.com/plugins/custom/microsoft/o365/custom-blog-rss?tid=-5120206136278231098&board=Windows-ITPro-blog&size=25",
     "/itopstalkblog": "https://techcommunity.microsoft.com/plugins/custom/microsoft/o365/custom-blog-rss?tid=-5120206136278231098&board=ITOpsTalkBlog&size=25",
+    "/adamtheautomator": "https://adamtheautomator.com/feed/",
+    "/thelazyadministrator": "https://www.thelazyadministrator.com/feed/",
+    "/powershellcommunity": "https://devblogs.microsoft.com/powershell-community/feed/",
+    "/powershellteam": "https://devblogs.microsoft.com/powershell/feed/",
 }
 
 feed_names = {
@@ -91,7 +95,12 @@ feed_names = {
     "Apps on Azure Blog": "/appsonazureblog",
     "Windows IT Pro": "/windowsitpro",
     "IT OpsTalk Blog": "/itopstalkblog",
+    "Adam the Automator": "/adamtheautomator",
+    "The Lazy Administrator": "/thelazyadministrator",
+    "PowerShell Community": "/powershellcommunity",
+    "PowerShell Team": "/powershellteam",
 }
+
 
 
 # Configuração inicial
@@ -426,6 +435,27 @@ def choose_feed(chat_id):
                         text="IT OpsTalk Blog",
                         callback_data="/itopstalkblog",
                     ),
+                
+                ],
+                [
+                    InlineKeyboardButton(
+                        text="Adam the Automator",
+                        callback_data="/adamtheautomator",
+                    ),
+                    InlineKeyboardButton(
+                        text="The Lazy Administrator",
+                        callback_data="/thelazyadministrator",
+                    ),                    
+                ],
+                [
+                    InlineKeyboardButton(
+                        text="PowerShell Community",
+                        callback_data="/powershellcommunity",
+                    ),
+                    InlineKeyboardButton(
+                        text="PowerShell Team",
+                        callback_data="/powershellteam",
+                    ),                    
                 ],
                 [
                     InlineKeyboardButton(
