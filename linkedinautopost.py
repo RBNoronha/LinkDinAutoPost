@@ -53,8 +53,8 @@ def set_openai_config(api_base, api_key):
 
 
 # API para as configurações do Telegram e LinkedIn
-TELEGRAM_TOKEN = "6541058474:AAFcGq9GbK8RTxXv28RR49VAPsZ5OoB4MKw"
-ACCESS_TOKEN = "AQWVIcV41Rf1Jruwi6RgK9aUgyou22l60Ax-sqUmFkhbnb3CeVbEsImsc3OwLmtOUK4sIkH5eJZ-It6tV3cNythPTl5azRvcYuGnR9G-Jh_3rDpA5_xH6MMWGip38-2zaY1rmNpW_RVFeS3lKhBzNhPZNTkdXjqdOCFyI7JkNlkiJM9yyz5zCNcfsE-FRKY76fmaSlA8fNiek2bKvkQ58OM3MA2pSFzZqcwbRBKR1KD6NusTLEQfgnqKkyHNUTUEpFbwQpZljXHa7MoOYYhTj_vn9JP8o_vaTRcE8s744aFk1aYKpQ-3LYBbozVyc-FWlap0L5jSWsbmKQmSXmh4cLYgZ0ukBQ"
+TELEGRAM_TOKEN = "YOURTOKEN"
+ACCESS_TOKEN = "YOUTYOKEN"
 
 feed_urls = {
     "/startcustomblog": "https://techcommunity.microsoft.com/plugins/custom/microsoft/o365/custom-blog-rss?tid=-177205926965371099&size=65",
