@@ -1,3 +1,4 @@
+import asyncio
 import json
 import os
 import re
@@ -11,6 +12,7 @@ import openai
 import pytz
 import requests
 import telepot
+import telepot.aio
 from apscheduler.schedulers.background import BackgroundScheduler
 from bs4 import BeautifulSoup
 from googletrans import Translator
@@ -26,33 +28,36 @@ def remove_html_tags(text):
 
 # Configurações do Azure OpenAI RBLN
 openai.api_type = "azure"
-openai.api_base = "YOUR_AZURE_API_BASE"
-openai.api_version = "YOUR_AZURE_API_VERSION"
+openai.api_base = "YOUR_AZURE_OPENAI_API_BASE"
+openai.api_version = "2023-07-01-preview"
 openai.api_key = "YOUR_AZURE_API_KEY"
 
-# Configurações do Azure OpenAI
-RBLN_API_BASE = "YOUR_AZURE_API_BASE"
+# Configurações do Azure OpenAI RBLN
+RBLN_API_BASE = "YOUR_AZURE_OPENAI_API_BASE"
 RBLN_API_KEY = "YOUR_AZURE_API_KEY"
 
-# Configurações do Azure OpenAI para redundancia
-RBPS_API_BASE = "YOUR_AZURE_API_BASE"
+# Configurações do Azure OpenAI para redundância
+RBPS_API_BASE = "YOUR_AZURE_OPENAI_API_BASE"
 RBPS_API_KEY = "YOUR_AZURE_API_KEY"
+
+# Modelo de linguagem GPT criado no Azure OpenAI
+GPT_MODEL_32K = "gpt-4-32k"
+GPT_MODEL_TURBO = "gpt-4-preview"
 
 
 def set_openai_config(api_base, api_key):
     openai.api_type = "azure"
     openai.api_base = api_base
-    openai.api_version = "YOUR_AZURE_API_VERSION"
+    openai.api_version = "2023-07-01-preview"
     openai.api_key = api_key
 
 
 # API para as configurações do Telegram e LinkedIn
-TELEGRAM_TOKEN = "YOUR_TELEGRAM_TOKEN"
-ACCESS_TOKEN = "YOUR_ACCESS_TOKEN"
+TELEGRAM_TOKEN = "6541058474:AAFcGq9GbK8RTxXv28RR49VAPsZ5OoB4MKw"
+ACCESS_TOKEN = "AQWVIcV41Rf1Jruwi6RgK9aUgyou22l60Ax-sqUmFkhbnb3CeVbEsImsc3OwLmtOUK4sIkH5eJZ-It6tV3cNythPTl5azRvcYuGnR9G-Jh_3rDpA5_xH6MMWGip38-2zaY1rmNpW_RVFeS3lKhBzNhPZNTkdXjqdOCFyI7JkNlkiJM9yyz5zCNcfsE-FRKY76fmaSlA8fNiek2bKvkQ58OM3MA2pSFzZqcwbRBKR1KD6NusTLEQfgnqKkyHNUTUEpFbwQpZljXHa7MoOYYhTj_vn9JP8o_vaTRcE8s744aFk1aYKpQ-3LYBbozVyc-FWlap0L5jSWsbmKQmSXmh4cLYgZ0ukBQ"
 
-# URLs dos feeds RSS
 feed_urls = {
-    "/startcustomblog": "https://techcommunity.microsoft.com/plugins/custom/microsoft/o365/custom-blog-rss?tid=-177205926965371099&size=100",
+    "/startcustomblog": "https://techcommunity.microsoft.com/plugins/custom/microsoft/o365/custom-blog-rss?tid=-177205926965371099&size=65",
     "/startinfrastructure": "https://techcommunity.microsoft.com/plugins/custom/microsoft/o365/custom-blog-rss?tid=5272649121701694560&board=CoreInfrastructureandSecurityBlog&size=25",
     "/startazureaiservices": "https://techcommunity.microsoft.com/plugins/custom/microsoft/o365/custom-blog-rss?tid=3287690017842470215&board=Azure-AI-Services-blog&size=25",
     "/startmicrosoft365": "https://techcommunity.microsoft.com/plugins/custom/microsoft/o365/custom-blog-rss?tid=-7424720648213528660&board=microsoft_365blog&size=25",
@@ -74,6 +79,21 @@ feed_urls = {
     "/thelazyadministrator": "https://www.thelazyadministrator.com/feed/",
     "/powershellcommunity": "https://devblogs.microsoft.com/powershell-community/feed/",
     "/powershellteam": "https://devblogs.microsoft.com/powershell/feed/",
+    "/practical365": "https://practical365.com/feed/",
+    "/cloudpirate": "https://the.cloudpirate.net/rss.xml",
+    "/wedoazure": "https://wedoazure.ie/feed/",
+    "/charbelnemnom": "https://charbelnemnom.com/feed/",
+    "/growingwiththeweb": "https://www.growingwiththeweb.com/site.atom",
+    "/azureappService": "https://azure.github.io/AppService/feed.xml",
+    "/azureappService": "https://azure.github.io/AppService/feed.xml",
+    "/plainenglishai": "https://ai.plainenglish.io/feed",
+    "/azurefeeds": "https://azurefeeds.com/feed/",
+    "/lazyadmin": "https://lazyadmin.nl/feed/",
+    "/planetpowershell": "https://www.planetpowershell.com/feed",
+    "/natehutchinson": "https://www.natehutchinson.co.uk/blog-feed.xml",
+    "/ourcloudnetwork": "https://ourcloudnetwork.com/feed/",
+    "/techielass": "https://www.techielass.com/rss/",
+    "/oceanleaf": "https://oceanleaf.ch/rss/",
 }
 
 feed_names = {
@@ -99,11 +119,24 @@ feed_names = {
     "The Lazy Administrator": "/thelazyadministrator",
     "PowerShell Community": "/powershellcommunity",
     "PowerShell Team": "/powershellteam",
+    "Practical 365": "/practical365",
+    "Cloud Pirate": "/cloudpirate",
+    "We Do Azure": "/wedoazure",
+    "Charbel Nemnom": "/charbelnemnom",
+    "Growing with the Web": "/growingwiththeweb",
+    "Azure App Service": "/azureappService",
+    "Plain English AI": "/plainenglishai",
+    "Azure Feeds": "/azurefeeds",
+    "Lazy Admin": "/lazyadmin",
+    "Planet PowerShell": "/planetpowershell",
+    "Our Cloud Network": "/ourcloudnetwork",
+    "Nate Hutchinson": "/natehutchinson",
+    "Techie Lass": "/techielass",
+    "Ocean Leaf": "/oceanleaf",
 }
 
 
-
-# Configuração inicial
+# variáveis globais para armazenar artigos e feeds RSS selecionados pelo usuário
 (
     awaiting_confirmation,
     awaiting_schedule,
@@ -136,7 +169,7 @@ def get_open_graph_tags(url):
     return og_tags
 
 
-# Função para gerar resumo usando GPT-4
+# Função para gerar resumo usando GPT-4-Turbo API do Azure OpenAI
 def generate_summary(article_summary, article_url):
     cleaned_summary = remove_html_tags(article_summary)
     messages = [
@@ -171,18 +204,18 @@ def generate_summary(article_summary, article_url):
         {"role": "user", "content": f"Summarize the following news: {cleaned_summary}"},
     ]
 
-    # Moodelo de linguagem GPT-4-32k para gerar o resumo
+    # Moodelo de linguagem GPT-4-Turbo para gerar o resumo, usando a API do Azure OpenAI, com a chave de API do Azure OpenAI RBLN e RBPSForlife, para gerar o resumo, com redundância caso uma das APIs esteja fora do ar.
     try:
         set_openai_config(RBLN_API_BASE, RBLN_API_KEY)
         response = openai.ChatCompletion.create(
-            engine="gpt-4-32k", messages=messages, temperature=0.5
+            engine=GPT_MODEL_TURBO, messages=messages, temperature=0.7
         )
     except Exception as e:
         print(f"Erro com API OpenAI Primaria: {e}")
         print("Alterando para API OpenAI Secundaria..")
         set_openai_config(RBPS_API_BASE, RBPS_API_KEY)
         response = openai.ChatCompletion.create(
-            engine="gpt-4-32k", messages=messages, temperature=0.5
+            engine=GPT_MODEL_TURBO, messages=messages, temperature=0.7
         )
     summary = response["choices"][0]["message"]["content"]
     return summary
@@ -232,7 +265,7 @@ def post_to_linkedin(title, description, url):
 
 
 # Função para enviar um seletor de data, divida em etapas, primeiro o dia, depois o mês e depois o ano.
-def send_datepicker(chat_id):
+async def send_datepicker(chat_id):
     now = datetime.now()
     year = now.year
 
@@ -266,7 +299,7 @@ def send_datepicker(chat_id):
     keyboard.append(years)  # Anos
 
     # Enviar a mensagem com o teclado inline
-    bot.sendMessage(
+    await bot.sendMessage(
         chat_id,
         "Selecione o dia, mês e ano:",
         reply_markup=InlineKeyboardMarkup(inline_keyboard=keyboard),
@@ -274,12 +307,12 @@ def send_datepicker(chat_id):
 
 
 # Função para lidar com mensagens recebidas
-def handle(msg):
+async def handle(msg):
     global awaiting_confirmation, awaiting_schedule, selected_article, summary, article_title, article_url, global_articles, selected_day, selected_month, selected_year
     content_type, chat_type, chat_id = telepot.glance(msg)
 
     if content_type != "text":
-        bot.sendMessage(
+        await bot.sendMessage(
             chat_id,
             "*Desculpe, eu só posso processar mensagens de texto.*",
             parse_mode="markdown",
@@ -292,56 +325,56 @@ def handle(msg):
 
     # Processando comando /start
     if user_input == "/start":
-        choose_feed(chat_id)
+        await choose_feed(chat_id)
         return
 
     # Verificando se o bot está aguardando uma confirmação do usuário
     if awaiting_confirmation:
-        handle_confirmation(user_input, chat_id)
+        await handle_confirmation(user_input, chat_id)
         return
 
     # Verificando se o bot está aguardando uma solicitação de agendamento
     if selected_day and selected_month and selected_year:
-        handle_schedule_request(chat_id, user_input)
+        await handle_schedule_request(chat_id, user_input)
         return
 
     # Processando comandos de feed RSS
     if user_input in feed_urls:
-        handle_rss_feed(user_input, chat_id)
+        await handle_rss_feed(user_input, chat_id)
         return
 
     # Processando escolha de artigo do usuário
     if user_input.isdigit():
-        handle_article_choice(int(user_input), chat_id)
+        await handle_article_choice(int(user_input), chat_id)
         return
 
     else:
-        bot.sendMessage(
+        await bot.sendMessage(
             chat_id,
             "*Desculpe, não entendi o seu pedido. Por favor, selecione um feed RSS ou digite um número de artigo.*",
             parse_mode="markdown",
         )
 
     if summary:
-        send_post_schedule_options(chat_id)
+        await send_post_schedule_options(chat_id)
         return
 
 
-def send_post_schedule_options(chat_id):
+async def send_post_schedule_options(chat_id):
     keyboard = [
         [InlineKeyboardButton(text="Postar", callback_data="postar")],
         [InlineKeyboardButton(text="Agendar", callback_data="agendar")],
     ]
 
-    bot.sendMessage(
+    await bot.sendMessage(
         chat_id,
         "Escolha uma opção:",
         reply_markup=InlineKeyboardMarkup(inline_keyboard=keyboard),
     )
 
 
-def choose_feed(chat_id):
-    bot.sendMessage(
+async def choose_feed(chat_id):
+    await bot.sendMessage(
         chat_id,
         text="Olá, sou o Linkedingpt, um bot que ajuda você a postar notícias no LinkedIn. Escolha um dos feeds RSS disponíveis:",
         reply_markup=InlineKeyboardMarkup(
@@ -352,8 +385,8 @@ def choose_feed(chat_id):
                         callback_data="/startcustomblog",
                     ),
                     InlineKeyboardButton(
-                        text="Infrastructure",
-                        callback_data="/startinfrastructure",
+                        text="Azure Feeds",
+                        callback_data="/azurefeeds",
                     ),
                 ],
                 [
@@ -362,8 +395,8 @@ def choose_feed(chat_id):
                         callback_data="/startazureaiservices",
                     ),
                     InlineKeyboardButton(
-                        text="Microsoft 365",
-                        callback_data="/startmicrosoft365",
+                        text="Plain English AI",
+                        callback_data="/plainenglishai",
                     ),
                 ],
                 [
@@ -392,8 +425,8 @@ def choose_feed(chat_id):
                         callback_data="/startcommandline",
                     ),
                     InlineKeyboardButton(
-                        text="Mike F Robbins",
-                        callback_data="/startmikefrobbins",
+                        text="Infrastructure",
+                        callback_data="/startinfrastructure",
                     ),
                 ],
                 [
@@ -435,7 +468,6 @@ def choose_feed(chat_id):
                         text="IT OpsTalk Blog",
                         callback_data="/itopstalkblog",
                     ),
-                
                 ],
                 [
                     InlineKeyboardButton(
@@ -445,7 +477,7 @@ def choose_feed(chat_id):
                     InlineKeyboardButton(
                         text="The Lazy Administrator",
                         callback_data="/thelazyadministrator",
-                    ),                    
+                    ),
                 ],
                 [
                     InlineKeyboardButton(
@@ -455,7 +487,77 @@ def choose_feed(chat_id):
                     InlineKeyboardButton(
                         text="PowerShell Team",
                         callback_data="/powershellteam",
-                    ),                    
+                    ),
+                ],
+                [
+                    InlineKeyboardButton(
+                        text="Lazy Admin",
+                        callback_data="/lazyadmin",
+                    ),
+                    InlineKeyboardButton(
+                        text="Planet PowerShell",
+                        callback_data="/planetpowershell",
+                    ),
+                ],
+                [
+                    InlineKeyboardButton(
+                        text="Mike F Robbins",
+                        callback_data="/startmikefrobbins",
+                    ),
+                    InlineKeyboardButton(
+                        text="Cloud Pirate",
+                        callback_data="/cloudpirate",
+                    ),
+                ],
+                [
+                    InlineKeyboardButton(
+                        text="Practical 365",
+                        callback_data="/practical365",
+                    ),
+                    InlineKeyboardButton(
+                        text="Microsoft 365",
+                        callback_data="/startmicrosoft365",
+                    ),
+                ],
+                [
+                    InlineKeyboardButton(
+                        text="We Do Azure",
+                        callback_data="/wedoazure",
+                    ),
+                    InlineKeyboardButton(
+                        text="Charbel Nemnom",
+                        callback_data="/charbelnemnom",
+                    ),
+                ],
+                [
+                    InlineKeyboardButton(
+                        text="Growing with the Web",
+                        callback_data="/growingwiththeweb",
+                    ),
+                    InlineKeyboardButton(
+                        text="Azure App Service",
+                        callback_data="/azureappService",
+                    ),
+                ],
+                [
+                    InlineKeyboardButton(
+                        text="Our Cloud Network",
+                        callback_data="/ourcloudnetwork",
+                    ),
+                    InlineKeyboardButton(
+                        text="Nate Hutchinson",
+                        callback_data="/natehutchinson",
+                    ),
+                ],
+                [
+                    InlineKeyboardButton(
+                        text="Techie Lass",
+                        callback_data="/techielass",
+                    ),
+                    InlineKeyboardButton(
+                        text="Ocean Leaf",
+                        callback_data="/oceanleaf",
+                    ),
                 ],
                 [
                     InlineKeyboardButton(
@@ -469,22 +571,22 @@ def choose_feed(chat_id):
 
 
 # Função para lidar com a confirmação do usuário
-def handle_confirmation(user_input, chat_id):
+async def handle_confirmation(user_input, chat_id):
     global awaiting_confirmation
     if user_input.lower() == "s":
         response_data = post_to_linkedin(article_title, summary, article_url)
         if "id" in response_data:
-            bot.sendMessage(
+            await bot.sendMessage(
                 chat_id, "*Postado com sucesso no LinkedIn.*", parse_mode="markdown"
             )
         else:
-            bot.sendMessage(
+            await bot.sendMessage(
                 chat_id, "*Erro ao postar no LinkedIn.*", parse_mode="markdown"
             )
     elif user_input.lower() == "n":
-        bot.sendMessage(chat_id, "*Postagem cancelada.*", parse_mode="markdown")
+        await bot.sendMessage(chat_id, "*Postagem cancelada.*", parse_mode="markdown")
     else:
-        bot.sendMessage(
+        await bot.sendMessage(
             chat_id,
             "*Resposta inválida. Por favor, responda com 'S' para SIM ou 'N' para NÃO.*",
             parse_mode="markdown",
@@ -494,7 +596,7 @@ def handle_confirmation(user_input, chat_id):
 
 
 # Função para lidar com a solicitação de agendamento do usuário
-def handle_schedule_request(chat_id, message_text):
+async def handle_schedule_request(chat_id, message_text):
     global translated_article_title, selected_day, selected_month, selected_year
 
     try:
@@ -513,25 +615,25 @@ def handle_schedule_request(chat_id, message_text):
             args=[article_title, summary, article_url],
             id=translated_article_title,  # Usando o título traduzido do artigo como ID do trabalho
         )
-        bot.sendMessage(
+        await bot.sendMessage(
             chat_id, "*Postagem agendada com sucesso.*", parse_mode="markdown"
         )
     except ValueError:
-        bot.sendMessage(
+        await bot.sendMessage(
             chat_id,
             "*Formato de hora inválido. Por favor, forneça a hora no formato HH:MM.*",
             parse_mode="markdown",
         )
         return  # Retorna para evitar redefinir selected_day, selected_month e selected_year
-    selected_day = (
-        selected_month
-    ) = selected_year = None  # Resetando o dia, mês e ano selecionados
+    selected_day = selected_month = selected_year = (
+        None  # Resetando o dia, mês e ano selecionados
+    )
 
 
 # Função para lidar com a escolha de feed RSS do usuário
-def handle_rss_feed(user_input, chat_id):
+async def handle_rss_feed(user_input, chat_id):
     global global_articles
-    bot.sendMessage(
+    await bot.sendMessage(
         chat_id,
         "*Bem-vindo! Por favor, selecione o feed RSS do qual deseja coletar as notícias.*",
         parse_mode="markdown",
@@ -542,7 +644,7 @@ def handle_rss_feed(user_input, chat_id):
         [InlineKeyboardButton(text=key, callback_data=feed_urls[key])]
         for key in feed_urls
     ]
-    bot.sendMessage(
+    await bot.sendMessage(
         chat_id,
         "Escolha o feed:",
         reply_markup=InlineKeyboardMarkup(inline_keyboard=keyboard),
@@ -550,8 +652,8 @@ def handle_rss_feed(user_input, chat_id):
 
 
 # Enviar notificação de geração de resumo
-def send_summary_generation_notification(chat_id):
-    bot.sendMessage(
+async def send_summary_generation_notification(chat_id):
+    await bot.sendMessage(
         chat_id,
         "*O processo de geração do resumo encontra-se em andamento. Por favor, aguarde enquanto o sistema procede com a produção do resumo.*",
         parse_mode="markdown",
@@ -559,12 +661,12 @@ def send_summary_generation_notification(chat_id):
 
 
 # Função para lidar com a escolha de artigo do usuário
-def handle_article_choice(article_index, chat_id):
+async def handle_article_choice(article_index, chat_id):
     global selected_article, article_url, article_title, summary, awaiting_confirmation, awaiting_schedule, translated_article_title
 
     # Verifica se global_articles foi definido
     if global_articles is None:
-        bot.sendMessage(
+        await bot.sendMessage(
             chat_id,
             "*Nenhuma notícia foi listada ainda. Por favor, selecione um feed RSS primeiro.*",
             parse_mode="markdown",
@@ -572,7 +674,7 @@ def handle_article_choice(article_index, chat_id):
         return
 
     if not 0 < article_index <= len(global_articles):
-        bot.sendMessage(
+        await bot.sendMessage(
             chat_id,
             "*Número de artigo inválido. Por favor, tente novamente.*",
             parse_mode="markdown",
@@ -586,7 +688,7 @@ def handle_article_choice(article_index, chat_id):
         article_title = selected_article.title
         translated_article_title = translator.translate(article_title, dest="pt").text
     else:
-        bot.sendMessage(
+        await bot.sendMessage(
             chat_id,
             "*Nenhuma notícia foi listada ainda. Por favor, selecione um feed RSS primeiro.*",
             parse_mode="markdown",
@@ -594,11 +696,11 @@ def handle_article_choice(article_index, chat_id):
         return
 
     # Enviar notificação de geração de resumo
-    send_summary_generation_notification(chat_id)
+    await send_summary_generation_notification(chat_id)
 
     # Gerar resumo
     summary = generate_summary(selected_article.summary, article_url)
-    bot.sendMessage(chat_id, f"*Resumo: {summary} *", parse_mode="markdown")
+    await bot.sendMessage(chat_id, f"*Resumo: {summary} *", parse_mode="markdown")
 
     # Enviar opções de postagem
     keyboard = [
@@ -618,7 +720,7 @@ def handle_article_choice(article_index, chat_id):
         ],
         [InlineKeyboardButton(text="Cancelar", callback_data="cancelar")],
     ]
-    bot.sendMessage(
+    await bot.sendMessage(
         chat_id,
         "Escolha uma opção:",
         reply_markup=InlineKeyboardMarkup(inline_keyboard=keyboard),
@@ -626,15 +728,17 @@ def handle_article_choice(article_index, chat_id):
 
 
 # Função para listar os agendamentos pendentes
-def list_schedules(chat_id):
+async def list_schedules(chat_id):
     jobs = scheduler.get_jobs()
     if jobs:
-        bot.sendMessage(chat_id, "*Agendamentos pendentes:*", parse_mode="markdown")
+        await bot.sendMessage(
+            chat_id, "*Agendamentos pendentes:*", parse_mode="markdown"
+        )
         keyboard = []
         for job in jobs:
             # Formata a data e a hora para o formato dd/mm/yy HH:MM
             formatted_time = job.next_run_time.strftime("%d/%m/%y %H:%M")
-            bot.sendMessage(
+            await bot.sendMessage(
                 chat_id,
                 f"- {job.id} agendado para {formatted_time}",
                 parse_mode="markdown",
@@ -642,9 +746,9 @@ def list_schedules(chat_id):
             cancel_id = str(
                 uuid.uuid4()
             )  # Cria um identificador único para o botão de cancelamento
-            global_jobs[
-                cancel_id
-            ] = job.id  # Adiciona o trabalho ao dicionário global_jobs
+            global_jobs[cancel_id] = (
+                job.id
+            )  # Adiciona o trabalho ao dicionário global_jobs
             keyboard.append(
                 [
                     InlineKeyboardButton(
@@ -655,20 +759,20 @@ def list_schedules(chat_id):
         keyboard.append(
             [InlineKeyboardButton(text="Cancelar todos", callback_data="cancel_all")]
         )
-        bot.sendMessage(
+        await bot.sendMessage(
             chat_id,
             "Selecione um agendamento para cancelar:",
             reply_markup=InlineKeyboardMarkup(inline_keyboard=keyboard),
         )
     else:
-        bot.sendMessage(
+        await bot.sendMessage(
             chat_id, "*Não há agendamentos pendentes.*", parse_mode="markdown"
         )
 
 
 # Função para lidar com o retorno da escolha do usuário
 # Função para lidar com o retorno da escolha do usuário
-def on_callback_query(msg):
+async def on_callback_query(msg):
     global global_articles, selected_day, selected_month, selected_year, article_title, summary, article_url, translated_article_title, selected_article
     query_id, from_id, query_data = telepot.glance(msg, flavor="callback_query")
 
@@ -677,7 +781,7 @@ def on_callback_query(msg):
         if selected_article is not None:
             # Gerar novo resumo
             summary = generate_summary(selected_article.summary, article_url)
-            bot.sendMessage(
+            await bot.sendMessage(
                 from_id, f"*Novo resumo: {summary} *", parse_mode="markdown"
             )
             # Apresentar as opções novamente
@@ -699,21 +803,21 @@ def on_callback_query(msg):
                 ],
                 [InlineKeyboardButton(text="Cancelar", callback_data="cancelar")],
             ]
-            bot.sendMessage(
+            await bot.sendMessage(
                 from_id,
                 "Escolha uma opção:",
                 reply_markup=InlineKeyboardMarkup(inline_keyboard=keyboard),
             )
         else:
-            bot.sendMessage(from_id, "Nenhuma notícia selecionada.")
+            await bot.sendMessage(from_id, "Nenhuma notícia selecionada.")
         return
 
     # Verifica se o usuário clicou no botão "Escolher outra notícia"
     if query_data == "escolher_outra_noticia":
         for i, article in enumerate(global_articles):
             translated_title = translator.translate(article.title, dest="pt").text
-            bot.sendMessage(from_id, f"{i+1}. {translated_title}")
-        bot.sendMessage(
+            await bot.sendMessage(from_id, f"{i+1}. {translated_title}")
+        await bot.sendMessage(
             from_id,
             "*Por favor, indique a notícia que deseja resumir informando o número correspondente.*",
             parse_mode="markdown",
@@ -722,26 +826,26 @@ def on_callback_query(msg):
 
     # Verifica se o usuário clicou no botão "Cancelar"
     if query_data == "cancelar":
-        bot.sendMessage(from_id, "*Operação cancelada.*", parse_mode="markdown")
-        choose_feed(from_id)
+        await bot.sendMessage(from_id, "*Operação cancelada.*", parse_mode="markdown")
+        await choose_feed(from_id)
         return
 
     # Verifica se o usuário clicou no botão "Agendar"
     if query_data == "agendar":
-        bot.answerCallbackQuery(query_id, text="Agendamento selecionado.")
-        send_datepicker(from_id)
+        await bot.answerCallbackQuery(query_id, text="Agendamento selecionado.")
+        await send_datepicker(from_id)
         return
 
     # Verifica se o usuário clicou no botão "Postar"
     if query_data == "postar":
-        bot.answerCallbackQuery(query_id, text="Postagem selecionada.")
+        await bot.answerCallbackQuery(query_id, text="Postagem selecionada.")
         response_data = post_to_linkedin(article_title, summary, article_url)
         if "id" in response_data:
-            bot.sendMessage(
+            await bot.sendMessage(
                 from_id, "*Postado com sucesso no LinkedIn.*", parse_mode="markdown"
             )
         else:
-            bot.sendMessage(
+            await bot.sendMessage(
                 from_id, "*Erro ao postar no LinkedIn.*", parse_mode="markdown"
             )
         return
@@ -749,7 +853,7 @@ def on_callback_query(msg):
     if query_data.startswith("cancel_"):
         if query_data == "cancel_all":
             scheduler.remove_all_jobs()
-            bot.answerCallbackQuery(
+            await bot.answerCallbackQuery(
                 query_id, text="Todos os agendamentos foram cancelados."
             )
         else:
@@ -757,50 +861,63 @@ def on_callback_query(msg):
             job_id = global_jobs.get(cancel_id)
             if job_id is not None:
                 scheduler.remove_job(job_id)
-                bot.answerCallbackQuery(
+                await bot.answerCallbackQuery(
                     query_id, text=f'O agendamento "{job_id}" foi cancelado.'
                 )
         return
 
     # Verifica se o usuário clicou no botão "Verificar agendamentos pendentes"
     if query_data == "list_schedules":
-        list_schedules(from_id)
+        await list_schedules(from_id)
         return
 
     # Verifica se o usuário selecionou um dia
     if query_data.startswith("day_"):
         selected_day = int(query_data[len("day_") :])
-        bot.answerCallbackQuery(query_id, text=f"Dia {selected_day} selecionado.")
+        await bot.answerCallbackQuery(query_id, text=f"Dia {selected_day} selecionado.")
         if selected_month and selected_year:
-            bot.sendMessage(from_id, "Por favor, digite a hora no formato HH:MM")
+            await bot.sendMessage(from_id, "Por favor, digite a hora no formato HH:MM")
         return
 
     # Verifica se o usuário selecionou um mês
     if query_data.startswith("month_"):
         selected_month = int(query_data[len("month_") :])
-        bot.answerCallbackQuery(query_id, text=f"Mês {selected_month} selecionado.")
+        await bot.answerCallbackQuery(
+            query_id, text=f"Mês {selected_month} selecionado."
+        )
         if selected_day and selected_year:
-            bot.sendMessage(from_id, "Por favor, digite a hora no formato HH:MM")
+            await bot.sendMessage(from_id, "Por favor, digite a hora no formato HH:MM")
         return
 
     # Verifica se o usuário selecionou um ano
     if query_data.startswith("year_"):
         selected_year = int(query_data[len("year_") :])
-        bot.answerCallbackQuery(query_id, text=f"Ano {selected_year} selecionado.")
+        await bot.answerCallbackQuery(
+            query_id, text=f"Ano {selected_year} selecionado."
+        )
         if selected_day and selected_month:
-            bot.sendMessage(from_id, "Por favor, digite a hora no formato HH:MM")
+            await bot.sendMessage(from_id, "Por favor, digite a hora no formato HH:MM")
         return
 
     # Verifica se o dado retornado é um feed RSS válido
     if query_data in feed_urls:
         feed_url = feed_urls[query_data]
-        bot.answerCallbackQuery(query_id, text="Processando feed RSS...")
+        await bot.answerCallbackQuery(query_id, text="Processando feed RSS...")
         feed = feedparser.parse(feed_url)
         articles = feed.entries
 
         # Limita o número de notícias para 25 se o feed escolhido for startmikefrobbins
-        if query_data == "/startmikefrobbins" and len(articles) > 25:
-            articles = articles[:25]
+        if query_data == "/startmikefrobbins" and len(articles) > 50:
+            articles = articles[:50]
+
+        if query_data == "/charbelnemnom" and len(articles) > 50:
+            articles = articles[:50]
+
+        if query_data == "/azurefeeds" and len(articles) > 65:
+            articles = articles[:65]
+
+        if query_data == "/planetpowershell" and len(articles) > 50:
+            articles = articles[:50]
 
         global_articles = articles  # Agora isto está definindo a variável global
 
@@ -808,7 +925,7 @@ def on_callback_query(msg):
         feed_name = [
             name for name, command in feed_names.items() if command == query_data
         ][0]
-        bot.sendMessage(
+        await bot.sendMessage(
             from_id,
             f"*Realizando a tradução dos títulos das notícias do Feed {feed_name}, por favor, aguarde...*",
             parse_mode="markdown",
@@ -831,27 +948,29 @@ def on_callback_query(msg):
                     # Se a data de publicação não estiver disponível
                     message = f"{i+1}. {translated_title}"
 
-                bot.sendMessage(from_id, message)
+                await bot.sendMessage(from_id, message)
 
             except TypeError:
-                bot.sendMessage(from_id, f"{i+1}. Erro na tradução do título")
+                await bot.sendMessage(from_id, f"{i+1}. Erro na tradução do título")
 
-        bot.sendMessage(
+        await bot.sendMessage(
             from_id,
             "*Por favor, indique a notícia que deseja resumir informando o número correspondente.*",
             parse_mode="markdown",
         )
 
     else:
-        bot.answerCallbackQuery(query_id, text="Erro ao processar feed RSS.")
+        await bot.answerCallbackQuery(query_id, text="Erro ao processar feed RSS.")
 
 
 # Inicializar o bot
-bot = telepot.Bot(TELEGRAM_TOKEN)
+bot = telepot.aio.Bot(TELEGRAM_TOKEN)
 
 # Configurar o loop de mensagens
-bot.message_loop({"chat": handle, "callback_query": on_callback_query})
+loop = asyncio.get_event_loop()
+loop.create_task(
+    bot.message_loop({"chat": handle, "callback_query": on_callback_query})
+)
 
 # Manter o programa em execução
-while True:
-    pass
+loop.run_forever()
