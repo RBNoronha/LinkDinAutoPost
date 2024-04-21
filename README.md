@@ -20,7 +20,7 @@
 
 ## :page_facing_up: Introdução
 
-Este script em Python :snake: foi desenvolvido para automatizar o agendamento de postagens no LinkedIn e no Telegram. Ele permite que você programe suas postagens com antecedência, economizando tempo e esforço. 
+:snake: Este script em Python executa um bot do Telegram projetado para automatizar a postagem de notícias e artigos no LinkedIn. Ele utiliza feeds RSS para coletar notícias, gera resumos usando a API do Azure OpenAI, e posta ou agenda postagens no LinkedIn. Este bot é uma ferramenta poderosa para profissionais que desejam manter sua rede atualizada com as últimas notícias do setor, sem o esforço manual de escrever cada postagem.
 
 ## :star: Funcionalidades
 
