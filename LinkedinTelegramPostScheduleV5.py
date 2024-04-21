@@ -44,12 +44,12 @@ openai.api_version = "2023-07-01-preview"
 openai.api_key = "YOUR_AZURE_API_KEY"
 
 # Configurações do Azure OpenAI RBLN
-RBLN_API_BASE = "YOUR_AZURE_OPENAI_API_BASE"
-RBLN_API_KEY = "YOUR_AZURE_API_KEY"
+AZURE_API_BASE = "YOUR_AZURE_OPENAI_API_BASE"
+AZURE_API_KEY = "YOUR_AZURE_API_KEY"
 
 # Configurações do Azure OpenAI para redundância
-RBPS_API_BASE = "YOUR_AZURE_OPENAI_API_BASE"
-RBPS_API_KEY = "YOUR_AZURE_API_KEY"
+AZURE_REDUNDANCY_API_BASE = "YOUR_AZURE_OPENAI_API_BASE"
+AZURE_REDUNDANCY_API_KEY = "YOUR_AZURE_API_KEY"
 
 # Modelo de linguagem GPT criado no Azure OpenAI
 GPT_MODEL_32K = "gpt-4-32k"
@@ -287,14 +287,14 @@ def generate_summary(article_summary, article_url):
 
     # Moodelo de linguagem GPT-4-Turbo para gerar o resumo, usando a API do Azure OpenAI, com a chave de API do Azure OpenAI RBLN e RBPSForlife, para gerar o resumo, com redundância caso uma das APIs esteja fora do ar.
     try:
-        set_openai_config(RBLN_API_BASE, RBLN_API_KEY)
+        set_openai_config(AZURE_API_BASE, AZURE_API_KEY)
         response = openai.ChatCompletion.create(
             engine=GPT_MODEL_TURBO, messages=messages, temperature=0.5
         )
     except Exception as e:
         print(f"Erro com API OpenAI Primaria: {e}")
         print("Alterando para API OpenAI Secundaria..")
-        set_openai_config(RBPS_API_BASE, RBPS_API_KEY)
+        set_openai_config(AZURE_REDUNDANCY_API_BASE, AZURE_REDUNDANCY_API_KEY)
         response = openai.ChatCompletion.create(
             engine=GPT_MODEL_TURBO, messages=messages, temperature=0.5
         )
