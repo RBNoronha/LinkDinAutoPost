@@ -24,22 +24,22 @@
 ## :star: Funcionalidades
 
 ### 1. **Seleção de Feeds RSS**:
-Escolha entre diversos feeds RSS para obter notícias e artigos.
+-   Escolha entre diversos feeds RSS para obter notícias e artigos.
 
 ### 2. **Geração Automática de Resumos**:
-Utiliza a API do Azure OpenAI para gerar resumos concisos e relevantes dos artigos.
+-   Utiliza a API do Azure OpenAI para gerar resumos concisos e relevantes dos artigos.
 
 ### 3. **Postagem e Agendamento no LinkedIn**:
-Permite postar imediatamente ou agendar postagens no LinkedIn, incluindo a seleção de data e hora.
+-   Permite postar imediatamente ou agendar postagens no LinkedIn, incluindo a seleção de data e hora.
 
 ### 4. **Suporte a Múltiplas Línguas**: 
-Traduz títulos e conteúdos para o português antes da geração do resumo, utilizando a biblioteca googletrans.
+-   Traduz títulos e conteúdos para o português antes da geração do resumo, utilizando a biblioteca googletrans.
 
 ### 5. **Interface Interativa**: 
-Oferece uma interface de usuário amigável no Telegram para fácil navegação e operação.
+-   Oferece uma interface de usuário amigável no Telegram para fácil navegação e operação.
 
 ### 6. **Atualizações de Feeds em Tempo Real**:
-Verifica atualizações nos feeds RSS selecionados e notifica o usuário sobre novos artigos disponíveis.
+-   Verifica atualizações nos feeds RSS selecionados e notifica o usuário sobre novos artigos disponíveis.
 
 ## :bulb: Processo de Geração de Resumos
 
