@@ -3,8 +3,6 @@ apscheduler
 beautifulsoup4
 feedparser
 googletrans==2.0.0
-openai==1.6.1
-openai==0.28.0
 openai
 pytz
 requests
@@ -13,12 +11,3 @@ bs4
 async_timeout
 asyncio
 async
-az-cli
-google-generativeai
-youtube_transcript_api
-azure-identity
-tiktoken
-datetime
-selenium
-webdriver-manager
-matplotlib
