@@ -2,7 +2,7 @@ aiohttp
 apscheduler
 beautifulsoup4
 feedparser
-googletrans==2.0.0
+googletrans==4.0.0rc1
 openai
 pytz
 requests
