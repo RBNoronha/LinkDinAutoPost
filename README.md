@@ -12,7 +12,7 @@
    6. [Formatação para Postagem](#6-formatação-para-postagem)
    7. [Tecnologias Envolvidas](#7-tecnologias-envolvidas)
 4. [Benefícios](#rocket-benef%C3%ADcios)
-5. [Como usar](#hammer_and_wrench-executando)
+5. [Configuração](#hammer_and_wrench-configura%C3%A7%C3%A3o)
 6. [Uso](#rocket-uso)
 7. [Notas](#memo-notas)
 8. [Autor](#bust_in_silhouette-autor)
@@ -84,7 +84,7 @@ O resumo gerado é então formatado de acordo com as melhores práticas de posta
 A geração automática de resumos representa um avanço significativo na forma como os profissionais interagem com e disseminam informações em plataformas de rede profissional como o LinkedIn. Ao aproveitar o poder da inteligência artificial e do processamento de linguagem natural, este bot oferece uma solução eficaz para manter uma presença ativa e informativa online.
 
 
-## :hammer_and_wrench: Executando
+## :hammer_and_wrench: Configuração
 
 1. Certifique-se de ter o Python instalado em seu sistema.
 
@@ -100,9 +100,22 @@ A geração automática de resumos representa um avanço significativo na forma 
 3. Configure as seguintes credenciais no script:
 
 - **Token do Bot do Telegram:**: Obtenha um token criando um bot no Telegram através do BotFather.
-- **Chaves de API do Azure OpenAI**: Cadastre-se no Azure e crie uma instância do OpenAI para obter suas chaves de API.
-- **Token de Acesso do LinkedIn**: Crie um aplicativo no LinkedIn e obtenha um token de acesso OAuth2.
 
+   ```bash
+   TELEGRAM_TOKEN = "YOUR_TELEGRAM_TOKEN"
+   ```
+
+- **Chaves de API do Azure OpenAI**: Cadastre-se no Azure e crie uma instância do OpenAI para obter suas chaves de API.
+   ```base
+   AZURE_API_KEY = "YOUR_AZURE_OPENAI_API_KEY"
+   AZURE_API_BASE = "YOUR_AZURE_OPENAI_API_BASE"
+   GPT_MODEL_32K: = "YOUR_NAME_MODEL_AZURE"
+   GPT_MODEL_TURBO = "YOUR_NAME_MODEL_AZURE"
+   ```
+- **Token de Acesso do LinkedIn**: Crie um aplicativo no LinkedIn e obtenha um token de acesso OAuth2.
+   ```bash
+   ACCESS_TOKEN: "YOUR_TOKEN_OAUTH2_LINKEDIN"
+   ```
 
 3. Instale as bibliotecas.
 
@@ -130,4 +143,4 @@ Interaja com o bot através do Telegram. O bot oferece uma interface interativa 
 
 ## :bust_in_silhouette: Autor
 
-Este script foi desenvolvido por Renan Besserra. :octocat: Sinta-se à vontade para contribuir, relatar problemas ou enviar solicitações de recursos.
+Este script foi desenvolvido por Renan Besserra. :octocat: Sinta-se à vontade para contribuir, relatar problemas ou enviar solicitações de recursos.# LinkedinTelegramPostScheduleV5.py
