@@ -1,153 +1,154 @@
-# [:calendar: Linkedin AutoPost - Automatize suas postagens no LinkedIn e Telegram!](LinkedinTelegramPostScheduleV5.py)
+# [:calendar: Linkedin AutoPost - Automate your LinkedIn and Telegram posts!](LinkedinTelegramPostScheduleV5.py)
 
-## :page_facing_up: Introdução
+## :page_facing_up: Introduction
 
-:snake: Este script em Python executa um bot do Telegram projetado para automatizar a postagem de notícias e artigos no LinkedIn. Ele utiliza feeds RSS para coletar notícias, gera resumos usando a API do Azure OpenAI, e posta ou agenda postagens no LinkedIn. Este bot é uma ferramenta poderosa para profissionais que desejam manter sua rede atualizada com as últimas notícias do setor, sem o esforço manual de escrever cada postagem.
+:snake: This Python script runs a Telegram bot designed to automate the posting of news and articles on LinkedIn. It uses RSS feeds to collect news, generates summaries using the Azure OpenAI API, and posts or schedules posts on LinkedIn. This bot is a powerful tool for professionals who want to keep their network updated with the latest industry news, without the manual effort of writing each post.
 
-## :books: Índice
-1. [Introdução](#page_facing_up-introdu%C3%A7%C3%A3o)
-2. [Funcionalidades](#star-funcionalidades)
-3. [Processo de Geração de Resumos](#bulb-processo-de-gera%C3%A7%C3%A3o-de-resumos)
-   1. [Seleção de Conteúdo](#1-seleção-de-conteúdo)
-   2. [Extração de Conteúdo](#2-extração-de-conteúdo)
-   3. [Limpeza de Conteúdo](#3-limpeza-de-conteúdo)
-   4. [Tradução (Opcional)](#4-tradução-opcional)
-   5. [Geração de Resumo](#5-geração-de-resumo)
-   6. [Formatação para Postagem](#6-formatação-para-postagem)
-   7. [Tecnologias Envolvidas](#7-tecnologias-envolvidas)
-4. [Benefícios](#rocket-benef%C3%ADcios)
-5. [Configuração](#hammer_and_wrench-configura%C3%A7%C3%A3o)
-6. [Uso](#rocket-uso)
-7. [Notas](#memo-notas)
-8. [Autor](#bust_in_silhouette-autor)
+## :books: Table of Contents
+1. [Introduction](#page_facing_up-introduction)
+2. [Features](#star-features)
+3. [Summary Generation Process](#bulb-summary-generation-process)
+    1. [Content Selection](#1-content-selection)
+    2. [Content Extraction](#2-content-extraction)
+    3. [Content Cleaning](#3-content-cleaning)
+    4. [Translation (Optional)](#4-translation-optional)
+    5. [Summary Generation](#5-summary-generation)
+    6. [Formatting for Posting](#6-formatting-for-posting)
+    7. [Technologies Used](#7-technologies-used)
+4. [Benefits](#rocket-benefits)
+5. [Configuration](#hammer_and_wrench-configuration)
+6. [Usage](#rocket-usage)
+7. [Notes](#memo-notes)
+8. [Author](#bust_in_silhouette-author)
 
-## :star: Funcionalidades
+## :star: Features
 
-### 1. **Seleção de Feeds RSS**:
--   Escolha entre diversos feeds RSS para obter notícias e artigos.
+### 1. **RSS Feed Selection**:
+- Choose from various RSS feeds to get news and articles.
 
-### 2. **Geração Automática de Resumos**:
--   Utiliza a API do Azure OpenAI para gerar resumos concisos e relevantes dos artigos.
+### 2. **Automatic Summary Generation**:
+- Uses the Azure OpenAI API to generate concise and relevant summaries of articles.
 
-### 3. **Postagem e Agendamento no LinkedIn**:
--   Permite postar imediatamente ou agendar postagens no LinkedIn, incluindo a seleção de data e hora.
+### 3. **Posting and Scheduling on LinkedIn**:
+- Allows immediate posting or scheduling of posts on LinkedIn, including date and time selection.
 
-### 4. **Suporte a Múltiplas Línguas**: 
--   Traduz títulos e conteúdos para o português antes da geração do resumo, utilizando a biblioteca googletrans.
+### 4. **Multi-Language Support**:
+- Translates titles and content to Portuguese before summary generation, using the googletrans library.
 
-### 5. **Interface Interativa**: 
--   Oferece uma interface de usuário amigável no Telegram para fácil navegação e operação.
+### 5. **Interactive Interface**:
+- Provides a user-friendly interface on Telegram for easy navigation and operation.
 
-### 6. **Atualizações de Feeds em Tempo Real**:
--   Verifica atualizações nos feeds RSS selecionados e notifica o usuário sobre novos artigos disponíveis.
+### 6. **Real-Time Feed Updates**:
+- Checks for updates in the selected RSS feeds and notifies the user about new available articles.
 
-## :bulb: Processo de Geração de Resumos
+## :bulb: Summary Generation Process
 
-### 1. **Seleção de Conteúdo**
+### 1. **Content Selection**
 
--   O usuário seleciona um feed RSS de interesse, e o bot recupera os artigos mais recentes disponíveis nesse feed.
-
-
-### 2. **Extração de Conteúdo**
-
--   Para cada artigo selecionado, o bot extrai o conteúdo principal, incluindo título e corpo do texto. Em alguns casos, também são extraídas as tags Open Graph para obter imagens e descrições mais precisas.
+- The user selects an RSS feed of interest, and the bot retrieves the latest available articles from that feed.
 
 
-### 3. **Limpeza de Conteúdo**
+### 2. **Content Extraction**
 
--   O conteúdo extraído passa por um processo de limpeza para remover tags HTML, caracteres especiais e outros elementos que podem interferir na qualidade do resumo.
-
-
-### 4. **Tradução (Opcional)**
-
--   Se necessário, o conteúdo é traduzido para o idioma desejado usando a biblioteca `googletrans`. Esta etapa é importante para garantir que o resumo seja gerado no idioma preferido do usuário.
+- For each selected article, the bot extracts the main content, including title and body text. In some cases, Open Graph tags are also extracted to obtain more accurate images and descriptions.
 
 
-### 5. **Geração de Resumo**
+### 3. **Content Cleaning**
 
--   O conteúdo limpo e, se aplicável, traduzido é enviado para a API do Azure OpenAI. Utilizando modelos avançados de linguagem, como o GPT-4 do Azure OpenAI, a API gera um resumo conciso do artigo. Este resumo é otimizado para capturar os pontos principais do conteúdo, mantendo a coerência e a relevância, utilizando um modelo postagem.
-
-
-### 6. **Formatação para Postagem**
-
--   O resumo gerado é então formatado de acordo com as melhores práticas de postagem no LinkedIn, incluindo a adição de emojis, hashtags relevantes e uma questão provocativa no final para incentivar o engajamento.
+- The extracted content goes through a cleaning process to remove HTML tags, special characters, and other elements that may interfere with the quality of the summary.
 
 
-### 7. **Tecnologias Envolvidas**
+### 4. **Translation (Optional)**
 
-- **Feedparser**: Utilizado para parsear os feeds RSS e extrair os artigos.
-- **BeautifulSoup**: Auxilia na limpeza do conteúdo HTML dos artigos.
-- **Googletrans**: Biblioteca para tradução automática de textos.
-- **Azure OpenAI API**: Fornece acesso aos modelos de linguagem GPT-4 para a geração de resumos. A escolha dessa API se deve à sua capacidade de entender e sintetizar informações complexas de forma coerente e concisa.
+- If necessary, the content is translated to the desired language using the `googletrans` library. This step is important to ensure that the summary is generated in the user's preferred language.
 
 
-## :rocket: Benefícios
+### 5. **Summary Generation**
 
-- **Eficiência**: Automatiza o processo de leitura e síntese de informações, economizando tempo.
-- **Consistência**: Mantém um padrão de qualidade nos resumos, independentemente do volume de conteúdo processado.
-- **Engajamento**: Resumos bem elaborados e formatados de acordo com as diretrizes do LinkedIn podem aumentar o engajamento com o conteúdo postado.
-- **Acessibilidade**: Torna mais fácil para os profissionais compartilharem conhecimento e informações relevantes com sua rede, independentemente de barreiras linguísticas ou de tempo.
-
-A geração automática de resumos representa um avanço significativo na forma como os profissionais interagem com e disseminam informações em plataformas de rede profissional como o LinkedIn. Ao aproveitar o poder da inteligência artificial e do processamento de linguagem natural, este bot oferece uma solução eficaz para manter uma presença ativa e informativa online.
+- The cleaned content, if applicable, is sent to the Azure OpenAI API. Using advanced language models like Azure OpenAI's GPT-4, the API generates a concise summary of the article. This summary is optimized to capture the main points of the content while maintaining coherence and relevance, using a post-like model.
 
 
-## :hammer_and_wrench: Configuração
+### 6. **Formatting for Posting**
 
-1. Certifique-se de ter o Python instalado em seu sistema.
-
-2. Faça o download do repositorio para o seu computador.
-
-   ```bash
-   git clone https://github.com/RBNoronha/LinkDinAutoPost.git
-
-   cd LinkDinAutoPost
-   ```
+- The generated summary is then formatted according to best practices for posting on LinkedIn, including the addition of emojis, relevant hashtags, and a provocative question at the end to encourage engagement.
 
 
-3. Configure as seguintes credenciais no script:
+### 7. **Technologies Used**
 
-- **Token do Bot do Telegram:**: Obtenha um token criando um bot no Telegram através do BotFather.
-
-   ```bash
-   TELEGRAM_TOKEN = "YOUR_TELEGRAM_TOKEN"
-   ```
-
-- **Chaves de API do Azure OpenAI**: Cadastre-se no Azure e crie uma instância do OpenAI para obter suas chaves de API.
-   ```base
-   AZURE_API_KEY = "YOUR_AZURE_OPENAI_API_KEY"
-   AZURE_API_BASE = "YOUR_AZURE_OPENAI_API_BASE"
-   GPT_MODEL_32K: = "YOUR_NAME_MODEL_AZURE"
-   GPT_MODEL_TURBO = "YOUR_NAME_MODEL_AZURE"
-   ```
-- **Token de Acesso do LinkedIn**: Crie um aplicativo no LinkedIn e obtenha um token de acesso OAuth2.
-   ```bash
-   ACCESS_TOKEN: "YOUR_TOKEN_OAUTH2_LINKEDIN"
-   ```
-
-3. Instale as bibliotecas.
-
-   ```bash
-   pip install -r requirements.txt
-   ```
+- **Feedparser**: Used to parse RSS feeds and extract articles.
+- **BeautifulSoup**: Assists in cleaning the HTML content of articles.
+- **Googletrans**: Library for automatic text translation.
+- **Azure OpenAI API**: Provides access to GPT-4 language models for summary generation. The choice of this API is due to its ability to understand and synthesize complex information in a coherent and concise manner.
 
 
-4. Abra o terminal ou prompt de comando e execute o script `LinkedinTelegramPostScheduleV5.py` para iniciar.
+## :rocket: Benefits
 
-   ```bash
-   python LinkedinTelegramPostScheduleV5.py
-   ```
+- **Efficiency**: Automates the process of reading and summarizing information, saving time.
+- **Consistency**: Maintains a quality standard in summaries, regardless of the volume of processed content.
+- **Engagement**: Well-crafted and formatted summaries according to LinkedIn guidelines can increase engagement with the posted content.
+- **Accessibility**: Makes it easier for professionals to share knowledge and relevant information with their network, regardless of language or time barriers.
 
-
-## :rocket: Uso
-
-Interaja com o bot através do Telegram. O bot oferece uma interface interativa para escolher feeds RSS, visualizar notícias, gerar resumos e postar ou agendar postagens no LinkedIn.                        
+Automatic summary generation represents a significant advancement in how professionals interact with and disseminate information on professional networking platforms like LinkedIn. By harnessing the power of artificial intelligence and natural language processing, this bot offers an effective solution for maintaining an active and informative online presence.
 
 
-## :memo: Notas
+## :hammer_and_wrench: Configuration
 
-- :key: Certifique-se de ter as credenciais de API corretas para o LinkedIn e o Telegram antes de usar o script.
-- :computer: Este script foi testado em sistemas Windows e Linux. Pode haver diferenças na execução em outros sistemas operacionais.
+1. Make sure you have Python installed on your system.
 
-## :bust_in_silhouette: Autor
+2. Download the repository to your computer.
 
-Este script foi desenvolvido por Renan Besserra. :octocat: Sinta-se à vontade para contribuir, relatar problemas ou enviar solicitações de recursos.# LinkedinTelegramPostScheduleV5.py
+    ```bash
+    git clone https://github.com/RBNoronha/LinkDinAutoPost.git
+
+    cd LinkDinAutoPost
+    ```
+
+
+3. Configure the following credentials in the script:
+
+- **Telegram Bot Token**: Obtain a token by creating a bot on Telegram through BotFather.
+
+    ```bash
+    TELEGRAM_TOKEN = "YOUR_TELEGRAM_TOKEN"
+    ```
+
+- **Azure OpenAI API Keys**: Sign up for Azure and create an OpenAI instance to get your API keys.
+    ```base
+    AZURE_API_KEY = "YOUR_AZURE_OPENAI_API_KEY"
+    AZURE_API_BASE = "YOUR_AZURE_OPENAI_API_BASE"
+    GPT_MODEL_32K: = "YOUR_NAME_MODEL_AZURE"
+    GPT_MODEL_TURBO = "YOUR_NAME_MODEL_AZURE"
+    ```
+
+- **LinkedIn Access Token**: Create an application on LinkedIn and obtain an OAuth2 access token.
+    ```bash
+    ACCESS_TOKEN: "YOUR_TOKEN_OAUTH2_LINKEDIN"
+    ```
+
+3. Install the required libraries.
+
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+
+4. Open the terminal or command prompt and run the `LinkedinTelegramPostScheduleV5.py` script to start.
+
+    ```bash
+    python LinkedinTelegramPostScheduleV5.py
+    ```
+
+
+## :rocket: Usage
+
+Interact with the bot through Telegram. The bot provides an interactive interface to choose RSS feeds, view news, generate summaries, and post or schedule posts on LinkedIn.
+
+
+## :memo: Notes
+
+- :key: Make sure you have the correct API credentials for LinkedIn and Telegram before using the script.
+- :computer: This script has been tested on Windows and Linux systems. There may be differences in execution on other operating systems.
+
+## :bust_in_silhouette: Author
+
+This script was developed by Renan Besserra. :octocat: Feel free to contribute, report issues, or submit feature requests. # LinkedinTelegramPostScheduleV5.py
