@@ -1,10 +1,25 @@
-# LinkedinTelegramPostScheduleV5.py :calendar:
+# [:calendar: Linkedin AutoPost - Automatize suas postagens no LinkedIn e Telegram!](LinkedinTelegramPostScheduleV5.py)
 
-Este script em Python :snake: foi desenvolvido para automatizar o agendamento de postagens no LinkedIn e no Telegram. Ele permite que você programe suas postagens com antecedência, economizando tempo e esforço.
+
+
+## Índice
+
+- [Introdução](#introdução)
+- [Funcionalidades](#star-funcionalidades)
+- [Como usar](#hammer_and_wrench-como-usar)
+- [Requisitos](#page_with_curl-requisitos)
+- [Notas](#memo-notas)
+- [Autor](#bust_in_silhouette-autor)
+
+## Introdução
+
+Este script em Python :snake: foi desenvolvido para automatizar o agendamento de postagens no LinkedIn e no Telegram. Ele permite que você programe suas postagens com antecedência, economizando tempo e esforço. 
 
 ## :star: Funcionalidades
 
 1. **Agendamento de postagens**: O script permite que você agende suas postagens no LinkedIn e no Telegram para serem publicadas em um horário específico. Isso é útil para manter uma presença consistente nas redes sociais, mesmo quando você não está disponível para fazer as postagens manualmente.
+
+2. **Texto Persornalizado**:  
 
 2. **Suporte ao LinkedIn**: O script utiliza a API do LinkedIn para fazer as postagens agendadas. Ele permite que você escreva o conteúdo da postagem, adicione imagens e escolha a data e hora exatas para a publicação.
 
@@ -14,15 +29,26 @@ Este script em Python :snake: foi desenvolvido para automatizar o agendamento de
 
 5. **Interface de linha de comando**: O script possui uma interface de linha de comando simples e intuitiva. Ele permite que você execute o script e agende suas postagens com apenas alguns comandos.
 
+
 ## :hammer_and_wrench: Como usar
 
 1. Certifique-se de ter o Python instalado em seu sistema.
 
-2. Faça o download do arquivo `LinkedinTelegramPostScheduleV5.py` para o seu computador.
+2. Faça o download do repositorio para o seu computador.
 
-3. Abra o terminal ou prompt de comando e navegue até o diretório onde o arquivo `LinkedinTelegramPostScheduleV5.py` está localizado.
+   ```bash
+   git clone https://github.com/RBNoronha/LinkDinAutoPost.git
 
-4. Execute o seguinte comando para iniciar o script:
+   cd LinkDinAutoPost
+   ```
+
+3. Instale as bibliotecas.
+
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. Abra o terminal ou prompt de comando e execute o script `LinkedinTelegramPostScheduleV5.py` para iniciar.
 
    ```bash
    python LinkedinTelegramPostScheduleV5.py
@@ -43,4 +69,3 @@ Este script em Python :snake: foi desenvolvido para automatizar o agendamento de
 ## :bust_in_silhouette: Autor
 
 Este script foi desenvolvido por Renan Besserra. :octocat: Sinta-se à vontade para contribuir, relatar problemas ou enviar solicitações de recursos.# LinkedinTelegramPostScheduleV5.py
-
