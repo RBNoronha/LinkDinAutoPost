@@ -23,15 +23,23 @@
 
 ## :star: Funcionalidades
 
-1. **Agendamento de postagens**: O script permite que você agende suas postagens no LinkedIn e no Telegram para serem publicadas em um horário específico. Isso é útil para manter uma presença consistente nas redes sociais, mesmo quando você não está disponível para fazer as postagens manualmente.
+### 1. **Seleção de Feeds RSS**:
+Escolha entre diversos feeds RSS para obter notícias e artigos.
 
-2. **Suporte ao LinkedIn**: O script utiliza a API do LinkedIn para fazer as postagens agendadas. Ele permite que você escreva o conteúdo da postagem, adicione imagens e escolha a data e hora exatas para a publicação.
+### 2. **Geração Automática de Resumos**:
+Utiliza a API do Azure OpenAI para gerar resumos concisos e relevantes dos artigos.
 
-3. **Suporte ao Telegram**: Além do LinkedIn, o script também suporta o agendamento de postagens no Telegram. Ele utiliza a API do Telegram para fazer as postagens agendadas. Você pode escrever o conteúdo da postagem e escolher a data e hora exatas para a publicação.
+### 3. **Postagem e Agendamento no LinkedIn**:
+Permite postar imediatamente ou agendar postagens no LinkedIn, incluindo a seleção de data e hora.
 
-4. **Configurações personalizáveis**: O script permite que você personalize as configurações de acordo com suas necessidades. Você pode definir o caminho do arquivo de configuração, onde você pode armazenar suas credenciais de API e outras configurações específicas.
+### 4. **Suporte a Múltiplas Línguas**: 
+Traduz títulos e conteúdos para o português antes da geração do resumo, utilizando a biblioteca googletrans.
 
-5. **Interface de linha de comando**: O script possui uma interface de linha de comando simples e intuitiva. Ele permite que você execute o script e agende suas postagens com apenas alguns comandos.
+### 5. **Interface Interativa**: 
+Oferece uma interface de usuário amigável no Telegram para fácil navegação e operação.
+
+### 6. **Atualizações de Feeds em Tempo Real**:
+Verifica atualizações nos feeds RSS selecionados e notifica o usuário sobre novos artigos disponíveis.
 
 ## :bulb: Processo de Geração de Resumos
 
