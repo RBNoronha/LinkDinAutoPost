@@ -45,32 +45,32 @@
 
 ### 1. **Seleção de Conteúdo**
 
-O usuário seleciona um feed RSS de interesse, e o bot recupera os artigos mais recentes disponíveis nesse feed.
+-   O usuário seleciona um feed RSS de interesse, e o bot recupera os artigos mais recentes disponíveis nesse feed.
 
 
 ### 2. **Extração de Conteúdo**
 
-Para cada artigo selecionado, o bot extrai o conteúdo principal, incluindo título e corpo do texto. Em alguns casos, também são extraídas as tags Open Graph para obter imagens e descrições mais precisas.
+-   Para cada artigo selecionado, o bot extrai o conteúdo principal, incluindo título e corpo do texto. Em alguns casos, também são extraídas as tags Open Graph para obter imagens e descrições mais precisas.
 
 
 ### 3. **Limpeza de Conteúdo**
 
-O conteúdo extraído passa por um processo de limpeza para remover tags HTML, caracteres especiais e outros elementos que podem interferir na qualidade do resumo.
+-   O conteúdo extraído passa por um processo de limpeza para remover tags HTML, caracteres especiais e outros elementos que podem interferir na qualidade do resumo.
 
 
 ### 4. **Tradução (Opcional)**
 
-Se necessário, o conteúdo é traduzido para o idioma desejado usando a biblioteca `googletrans`. Esta etapa é importante para garantir que o resumo seja gerado no idioma preferido do usuário.
+-   Se necessário, o conteúdo é traduzido para o idioma desejado usando a biblioteca `googletrans`. Esta etapa é importante para garantir que o resumo seja gerado no idioma preferido do usuário.
 
 
 ### 5. **Geração de Resumo**
 
-O conteúdo limpo e, se aplicável, traduzido é enviado para a API do Azure OpenAI. Utilizando modelos avançados de linguagem, como o GPT-4 do Azure OpenAI, a API gera um resumo conciso do artigo. Este resumo é otimizado para capturar os pontos principais do conteúdo, mantendo a coerência e a relevância, utilizando um modelo postagem.
+-   O conteúdo limpo e, se aplicável, traduzido é enviado para a API do Azure OpenAI. Utilizando modelos avançados de linguagem, como o GPT-4 do Azure OpenAI, a API gera um resumo conciso do artigo. Este resumo é otimizado para capturar os pontos principais do conteúdo, mantendo a coerência e a relevância, utilizando um modelo postagem.
 
 
 ### 6. **Formatação para Postagem**
 
-O resumo gerado é então formatado de acordo com as melhores práticas de postagem no LinkedIn, incluindo a adição de emojis, hashtags relevantes e uma questão provocativa no final para incentivar o engajamento.
+-   O resumo gerado é então formatado de acordo com as melhores práticas de postagem no LinkedIn, incluindo a adição de emojis, hashtags relevantes e uma questão provocativa no final para incentivar o engajamento.
 
 
 ### 7. **Tecnologias Envolvidas**
