@@ -2,20 +2,20 @@
 
 ## :books: Índice
 1. [Introdução](#page_facing_up-introdu%C3%A7%C3%A3o)
-2. [Funcionalidades](#funcionalidades)
-3. [Processo de Geração de Resumos](#processo-de-geração-de-resumos)
-   1. [Seleção de Conteúdo](#seleção-de-conteúdo)
-   2. [Extração de Conteúdo](#extração-de-conteúdo)
-   3. [Limpeza de Conteúdo](#limpeza-de-conteúdo)
-   4. [Tradução (Opcional)](#tradução-opcional)
-   5. [Geração de Resumo](#geração-de-resumo)
-   6. [Formatação para Postagem](#formatação-para-postagem)
-   7. [Tecnologias Envolvidas](#tecnologias-envolvidas)
-4. [Benefícios](#benefícios)
-5. [Como usar](#como-usar)
-6. [Uso](#uso)
-7. [Notas](#notas)
-8. [Autor](#autor)
+2. [Funcionalidades](#star-funcionalidades)
+3. [Processo de Geração de Resumos](#bulb-processo-de-gera%C3%A7%C3%A3o-de-resumos)
+   1. [Seleção de Conteúdo](#1-seleção-de-conteúdo)
+   2. [Extração de Conteúdo](#2-extração-de-conteúdo)
+   3. [Limpeza de Conteúdo](#3-limpeza-de-conteúdo)
+   4. [Tradução (Opcional)](#4-tradução-opcional)
+   5. [Geração de Resumo](#5-geração-de-resumo)
+   6. [Formatação para Postagem](#6-formatação-para-postagem)
+   7. [Tecnologias Envolvidas](#7-tecnologias-envolvidas)
+4. [Benefícios](#rocket-benef%C3%ADcios)
+5. [Como usar](#hammer_and_wrench-executando)
+6. [Uso](#rocket-uso)
+7. [Notas](#memo-notas)
+8. [Autor](#bust_in_silhouette-autor)
 
 
 ## :page_facing_up: Introdução
@@ -84,7 +84,7 @@ O resumo gerado é então formatado de acordo com as melhores práticas de posta
 A geração automática de resumos representa um avanço significativo na forma como os profissionais interagem com e disseminam informações em plataformas de rede profissional como o LinkedIn. Ao aproveitar o poder da inteligência artificial e do processamento de linguagem natural, este bot oferece uma solução eficaz para manter uma presença ativa e informativa online.
 
 
-## :hammer_and_wrench: Como usar
+## :hammer_and_wrench: Executando
 
 1. Certifique-se de ter o Python instalado em seu sistema.
 
@@ -130,4 +130,4 @@ Interaja com o bot através do Telegram. O bot oferece uma interface interativa 
 
 ## :bust_in_silhouette: Autor
 
-Este script foi desenvolvido por Renan Besserra. :octocat: Sinta-se à vontade para contribuir, relatar problemas ou enviar solicitações de recursos.# LinkedinTelegramPostScheduleV5.py
+Este script foi desenvolvido por Renan Besserra. :octocat: Sinta-se à vontade para contribuir, relatar problemas ou enviar solicitações de recursos.
