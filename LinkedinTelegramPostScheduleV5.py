@@ -20,10 +20,16 @@ from telepot.loop import MessageLoop
 from telepot.namedtuple import InlineKeyboardButton, InlineKeyboardMarkup
 from datetime import datetime, timedelta
 from pytz import timezone
+import logging
+from config import TELEGRAM_TOKEN, ACCESS_TOKEN, AZURE_API_BASE, AZURE_API_KEY, AZURE_REDUNDANCY_API_BASE, AZURE_REDUNDANCY_API_KEY, GPT_MODEL_TURBO
+from rss_feeds import feed_urls, feed_names
+from utils import remove_html_tags, get_open_graph_tags, translate_text, save_last_check_dates, load_last_check_dates, save_schedules, load_schedules, restore_schedules
 
+# Configurar o logger
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # Variáveis globais para armazenar feeds RSS e artigos
-
 feed_updates = {}
 global_articles = None
 global_jobs = {}
@@ -32,142 +38,20 @@ last_check_dates = {}
 # Caminho para o arquivo de última verificação
 LAST_CHECK_FILE = "last_check.json"
 
-# Função para remover tags HTML
-def remove_html_tags(text):
-    clean = re.compile("<.*?>")
-    return re.sub(clean, "", text)
-
-# Configurações do Azure OpenAI RBLN
+# Configurações do Azure OpenAI
 openai.api_type = "azure"
-openai.api_base = "YOUR_AZURE_OPENAI_API_BASE"
+openai.api_base = AZURE_API_BASE
 openai.api_version = "2023-07-01-preview"
-openai.api_key = "YOUR_AZURE_API_KEY"
+openai.api_key = AZURE_API_KEY
 
-# Configurações do Azure OpenAI RBLN
-AZURE_API_BASE = "YOUR_AZURE_OPENAI_API_BASE"
-AZURE_API_KEY = "YOUR_AZURE_API_KEY"
-
-# Configurações do Azure OpenAI para redundância
-AZURE_REDUNDANCY_API_BASE = "YOUR_AZURE_OPENAI_API_BASE"
-AZURE_REDUNDANCY_API_KEY = "YOUR_AZURE_API_KEY"
-
-# Modelo de linguagem GPT criado no Azure OpenAI
-GPT_MODEL_32K = "gpt-4-32k"
-GPT_MODEL_TURBO = "gpt-4-preview"
-
-
+# Função para definir a configuração do OpenAI
 def set_openai_config(api_base, api_key):
     openai.api_type = "azure"
     openai.api_base = api_base
     openai.api_version = "2023-07-01-preview"
     openai.api_key = api_key
 
-
-# API para as configurações do Telegram e LinkedIn
-TELEGRAM_TOKEN = "YOURTOKEN"
-ACCESS_TOKEN = "YOUTYOKEN"
-
-feed_urls = {
-    "/startcustomblog": "https://techcommunity.microsoft.com/plugins/custom/microsoft/o365/custom-blog-rss?tid=-177205926965371099&size=65",
-    "/startinfrastructure": "https://techcommunity.microsoft.com/plugins/custom/microsoft/o365/custom-blog-rss?tid=5272649121701694560&board=CoreInfrastructureandSecurityBlog&size=25",
-    "/startazureaiservices": "https://techcommunity.microsoft.com/plugins/custom/microsoft/o365/custom-blog-rss?tid=3287690017842470215&board=Azure-AI-Services-blog&size=25",
-    "/startmicrosoft365": "https://techcommunity.microsoft.com/plugins/custom/microsoft/o365/custom-blog-rss?tid=-7424720648213528660&board=microsoft_365blog&size=25",
-    "/startserverless": "https://serverless360.com/feed/",
-    "/startnielskok": "https://www.nielskok.tech/feed",
-    "/startEducatordeveloper": "https://techcommunity.microsoft.com/plugins/custom/microsoft/o365/custom-blog-rss?tid=-3610219301967395228&board=EducatorDeveloperBlog&size=25",
-    "/startlandingpage": "https://devblogs.microsoft.com/landingpage/",
-    "/startcommandline": "https://devblogs.microsoft.com/commandline/feed/",
-    "/startmikefrobbins": "https://mikefrobbins.com/index.xml",
-    "/azuregovernanceandmanagement": "https://techcommunity.microsoft.com/plugins/custom/microsoft/o365/custom-blog-rss?tid=-5120206136278231098&board=AzureGovernanceandManagementBlog&size=25",
-    "/microsoftentra": "https://techcommunity.microsoft.com/plugins/custom/microsoft/o365/custom-blog-rss?tid=-5120206136278231098&board=Identity&size=25",
-    "/infrastructuresecurity": "https://techcommunity.microsoft.com/plugins/custom/microsoft/o365/custom-blog-rss?tid=-5120206136278231098&board=CoreInfrastructureandSecurityBlog&size=25",
-    "/securitycomplianceidentity": "https://techcommunity.microsoft.com/plugins/custom/microsoft/o365/custom-blog-rss?tid=-5120206136278231098&board=MicrosoftSecurityandCompliance&size=25",
-    "/fasttrackforazure": "https://techcommunity.microsoft.com/plugins/custom/microsoft/o365/custom-blog-rss?tid=-5120206136278231098&board=FastTrackforAzureBlog&size=25",
-    "/appsonazureblog": "https://techcommunity.microsoft.com/plugins/custom/microsoft/o365/custom-blog-rss?tid=-5120206136278231098&board=AppsonAzureBlog&size=25",
-    "/windowsitpro": "https://techcommunity.microsoft.com/plugins/custom/microsoft/o365/custom-blog-rss?tid=-5120206136278231098&board=Windows-ITPro-blog&size=25",
-    "/itopstalkblog": "https://techcommunity.microsoft.com/plugins/custom/microsoft/o365/custom-blog-rss?tid=-5120206136278231098&board=ITOpsTalkBlog&size=25",
-    "/adamtheautomator": "https://adamtheautomator.com/feed/",
-    "/thelazyadministrator": "https://www.thelazyadministrator.com/feed/",
-    "/powershellcommunity": "https://devblogs.microsoft.com/powershell-community/feed/",
-    "/powershellteam": "https://devblogs.microsoft.com/powershell/feed/",
-    "/practical365": "https://practical365.com/feed/",
-    "/lukegeek": "https://luke.geek.nz/rss",
-    "/wedoazure": "https://wedoazure.ie/feed/",
-    "/charbelnemnom": "https://charbelnemnom.com/feed/",
-    "/powershellisfun": "https://powershellisfun.com/feed/",
-    "/azureappService": "https://azure.github.io/AppService/feed.xml",
-    "/azureappService": "https://azure.github.io/AppService/feed.xml",
-    "/plainenglishai": "https://ai.plainenglish.io/feed",
-    "/azurefeeds": "https://azurefeeds.com/feed/",
-    "/lazyadmin": "https://lazyadmin.nl/feed/",
-    "/planetpowershell": "https://www.planetpowershell.com/feed",
-    "/natehutchinson": "https://www.natehutchinson.co.uk/blog-feed.xml",
-    "/ourcloudnetwork": "https://ourcloudnetwork.com/feed/",
-    "/techielass": "https://www.techielass.com/rss/",
-    "/oceanleaf": "https://oceanleaf.ch/rss/",
-    "/microsoftlearn": "https://techcommunity.microsoft.com/plugins/custom/microsoft/o365/custom-blog-rss?tid=2385852509875677505&board=MicrosoftLearnBlog&size=50",
-    "/prajwaldesai": "https://www.prajwaldesai.com/feed/",
-    "/admindroid": "https://blog.admindroid.com/feed/",
-    "/danielchronlund": "https://danielchronlund.com/feed/",
-    "/cswrld": "https://www.cswrld.com/feed/",
-    "/cloudarchitekt": "https://www.cloud-architekt.net/feed",
-    "/office365itpros": "https://office365itpros.com/feed/",
-    "/emsroute": "https://emsroute.com/feed/",
-    "/suryendub": "https://suryendub.github.io/feed",
-    "/cloudbrothers": "https://cloudbrothers.info/index.xml",
-}
-
-feed_names = {
-    "Custom Blog": "/startcustomblog",
-    "Infrastructure": "/startinfrastructure",
-    "Azure AI Services": "/startazureaiservices",
-    "Microsoft 365": "/startmicrosoft365",
-    "Serverless": "/startserverless",
-    "NielShok": "/startnielskok",
-    "Educator Developer": "/startEducatordeveloper",
-    "Landing Page": "/startlandingpage",
-    "Command Line": "/startcommandline",
-    "Mike F Robbins": "/startmikefrobbins",
-    "Azure Governance MGMT": "/azuregovernanceandmanagement",
-    "Microsoft Entra (Azure AD)": "/microsoftentra",
-    "Infrastructure Security": "/infrastructuresecurity",
-    "Sec, Compliance Identity": "/securitycomplianceidentity",
-    "FastTrack for Azure": "/fasttrackforazure",
-    "Apps on Azure Blog": "/appsonazureblog",
-    "Windows IT Pro": "/windowsitpro",
-    "IT OpsTalk Blog": "/itopstalkblog",
-    "Adam the Automator": "/adamtheautomator",
-    "The Lazy Administrator": "/thelazyadministrator",
-    "PowerShell Community": "/powershellcommunity",
-    "PowerShell Team": "/powershellteam",
-    "Practical 365": "/practical365",
-    "Luke Geek": "/lukegeek",
-    "We Do Azure": "/wedoazure",
-    "Charbel Nemnom": "/charbelnemnom",
-    "Powershell LisFun": "/powershellisfun",
-    "Azure App Service": "/azureappService",
-    "Plain English AI": "/plainenglishai",
-    "Azure Feeds": "/azurefeeds",
-    "Lazy Admin": "/lazyadmin",
-    "Planet PowerShell": "/planetpowershell",
-    "Our Cloud Network": "/ourcloudnetwork",
-    "Nate Hutchinson": "/natehutchinson",
-    "Techie Lass": "/techielass",
-    "Ocean Leaf": "/oceanleaf",
-    "Microsoft Learn": "/microsoftlearn",
-    "Prajwal Desai": "/prajwaldesai",
-    "AdminDroid": "/admindroid",
-    "Daniel Chronlund": "/danielchronlund",
-    "CSWrld": "/cswrld",
-    "Cloud Architekt": "/cloudarchitekt",
-    "Office 365 IT Pros": "/office365itpros",
-    "EMS Route": "/emsroute",
-    "Suryendu B": "/suryendub",
-    "Cloud Brothers": "/cloudbrothers",
-}
-
-
-# variáveis globais para armazenar artigos e feeds RSS selecionados pelo usuário
+# Variáveis globais para armazenar artigos e feeds RSS selecionados pelo usuário
 (
     awaiting_confirmation,
     awaiting_schedule,
@@ -186,19 +70,6 @@ translator = Translator()
 scheduler = BackgroundScheduler()
 scheduler.start()
 global_jobs = {}
-
-
-# Função para obter Open Graph Tags de uma URL
-def get_open_graph_tags(url):
-    response = requests.get(url)
-    soup = BeautifulSoup(response.content, "html.parser")
-    meta_tags = soup.find_all("meta")
-    og_tags = {}
-    for tag in meta_tags:
-        if tag.get("property", "").startswith("og:"):
-            og_tags[tag["property"][3:]] = tag["content"]
-    return og_tags
-
 
 # Função para gerar resumo usando GPT-4-Turbo API do Azure OpenAI
 def generate_summary(article_summary, article_url):
@@ -242,15 +113,14 @@ def generate_summary(article_summary, article_url):
             engine=GPT_MODEL_TURBO, messages=messages, temperature=0.5
         )
     except Exception as e:
-        print(f"Erro com API OpenAI Primaria: {e}")
-        print("Alterando para API OpenAI Secundaria..")
+        logger.error(f"Erro com API OpenAI Primaria: {e}")
+        logger.info("Alterando para API OpenAI Secundaria..")
         set_openai_config(AZURE_REDUNDANCY_API_BASE, AZURE_REDUNDANCY_API_KEY)
         response = openai.ChatCompletion.create(
             engine=GPT_MODEL_TURBO, messages=messages, temperature=0.5
         )
     summary = response["choices"][0]["message"]["content"]
     return summary
-
 
 # Obter URN da pessoa autenticada
 ME_RESOURCE = f"https://api.linkedin.com/v2/me"
@@ -261,7 +131,6 @@ if "id" not in me_response.json():
     raise Exception(
         "Erro ao obter o perfil do LinkedIn. Verifique o se o token de acesso não está expirado."
     )
-
 
 # Função para postar no LinkedIn usando a API
 def post_to_linkedin(title, description, url):
@@ -293,7 +162,6 @@ def post_to_linkedin(title, description, url):
     )
     response_data = response.json()
     return response_data
-
 
 # Função para enviar um seletor de data, divida em etapas, primeiro o dia, depois o mês e depois o ano.
 async def send_datepicker(chat_id):
@@ -335,7 +203,6 @@ async def send_datepicker(chat_id):
         "Selecione o dia, mês e ano:",
         reply_markup=InlineKeyboardMarkup(inline_keyboard=keyboard),
     )
-
 
 # Função para lidar com mensagens recebidas
 async def handle(msg):
@@ -390,7 +257,6 @@ async def handle(msg):
         await send_post_schedule_options(chat_id)
         return
 
-
 async def send_post_schedule_options(chat_id):
     keyboard = [
         [InlineKeyboardButton(text="Postar", callback_data="postar")],
@@ -402,7 +268,6 @@ async def send_post_schedule_options(chat_id):
         "Escolha uma opção:",
         reply_markup=InlineKeyboardMarkup(inline_keyboard=keyboard),
     )
-
 
 async def choose_feed(chat_id):
     await bot.sendMessage(
@@ -656,7 +521,6 @@ async def choose_feed(chat_id):
         ),
     )
 
-
 # Função para lidar com a confirmação do usuário
 async def handle_confirmation(user_input, chat_id):
     global awaiting_confirmation
@@ -681,7 +545,6 @@ async def handle_confirmation(user_input, chat_id):
         return  # Retorna para evitar redefinir awaiting_confirmation
     awaiting_confirmation = False  # Resetando o estado de awaiting_confirmation
 
-
 # Função para enviar um seletor de hora
 async def send_hourpicker(chat_id):
     # Criar botões para cada hora
@@ -699,7 +562,6 @@ async def send_hourpicker(chat_id):
         "Selecione a hora:",
         reply_markup=InlineKeyboardMarkup(inline_keyboard=keyboard),
     )
-
 
 # Função para enviar um seletor de minutos
 async def send_minute_picker(chat_id, selected_hour):
@@ -719,12 +581,10 @@ async def send_minute_picker(chat_id, selected_hour):
         reply_markup=InlineKeyboardMarkup(inline_keyboard=[minutes]),
     )
 
-
 # Função para lidar com a solicitação de agendamento do usuário
 
 # Caminho para o arquivo de agendamentos
 SCHEDULE_FILE = "schedules.json"
-
 
 # Carregar agendamentos do arquivo
 def load_schedules():
@@ -733,16 +593,13 @@ def load_schedules():
             return json.load(f)
     return {}
 
-
 # Salvar agendamentos no arquivo
 def save_schedules(schedules):
     with open(SCHEDULE_FILE, "w") as f:
         json.dump(schedules, f)
 
-
 # Carregar agendamentos existentes
 schedules = load_schedules()
-
 
 def restore_schedules():
     for job_id, job_data in schedules.items():
@@ -760,14 +617,12 @@ def restore_schedules():
                     id=job_id,
                 )
             else:
-                print(f"O agendamento {job_id} não possui 'run_date'.")
+                logger.warning(f"O agendamento {job_id} não possui 'run_date'.")
         except Exception as e:
-            print(f"Erro ao restaurar o agendamento {job_id}: {e}")
-
+            logger.error(f"Erro ao restaurar o agendamento {job_id}: {e}")
 
 # Chamar a função para restaurar os agendamentos
 restore_schedules()
-
 
 # Modificar a função handle_schedule_request para salvar os agendamentos
 async def handle_schedule_request(chat_id, selected_time):
@@ -822,7 +677,6 @@ async def handle_schedule_request(chat_id, selected_time):
         # Resetando as seleções
         selected_day = selected_month = selected_year = None
 
-
 # Função para lidar com a escolha de feed RSS do usuário
 async def handle_rss_feed(user_input, chat_id):
     global global_articles
@@ -843,7 +697,6 @@ async def handle_rss_feed(user_input, chat_id):
         reply_markup=InlineKeyboardMarkup(inline_keyboard=keyboard),
     )
 
-
 # Enviar notificação de geração de resumo
 async def send_summary_generation_notification(chat_id):
     await bot.sendMessage(
@@ -851,7 +704,6 @@ async def send_summary_generation_notification(chat_id):
         "*O processo de geração do resumo encontra-se em andamento. Por favor, aguarde enquanto o sistema procede com a produção do resumo.*",
         parse_mode="markdown",
     )
-
 
 # Função para lidar com a escolha de artigo do usuário
 async def handle_article_choice(article_index, chat_id):
@@ -919,7 +771,6 @@ async def handle_article_choice(article_index, chat_id):
         reply_markup=InlineKeyboardMarkup(inline_keyboard=keyboard),
     )
 
-
 # Função para listar os agendamentos pendentes
 async def list_schedules(chat_id):
     jobs = scheduler.get_jobs()
@@ -962,7 +813,6 @@ async def list_schedules(chat_id):
             chat_id, "*Não há agendamentos pendentes.*", parse_mode="markdown"
         )
 
-
 # Função auxiliar para enviar botões de atualização dos feeds
 async def send_feed_update_buttons(chat_id):
     global feed_updates  # Referência à variável global
@@ -1002,7 +852,6 @@ async def send_feed_update_buttons(chat_id):
         "Selecione um feed para ver as atualizações ou volte para escolha dos feeds:",
         reply_markup=InlineKeyboardMarkup(inline_keyboard=keyboard),
     )
-
 
 # Função para verificar atualizações nos feeds
 async def check_feed_updates(chat_id):
@@ -1050,7 +899,6 @@ async def check_feed_updates(chat_id):
     else:
         await bot.sendMessage(chat_id, "Não há novos artigos em nenhum feed.")
 
-
 # Função para mostrar atualizações de um feed específico
 async def show_feed_updates(chat_id, feed_command):
     global feed_updates  # Referência à variável global
@@ -1075,8 +923,6 @@ async def show_feed_updates(chat_id, feed_command):
     else:
         await bot.sendMessage(chat_id, f"Não há novos artigos em {feed_name}.")
 
-
-# Função para lidar com o retorno da escolha do usuário
 # Função para lidar com o retorno da escolha do usuário
 async def on_callback_query(msg):
     global global_articles, selected_day, selected_month, selected_year, article_title, summary, article_url, translated_article_title, selected_article, schedules
@@ -1335,7 +1181,6 @@ async def on_callback_query(msg):
     else:
         await bot.answerCallbackQuery(query_id, text="Erro ao processar feed RSS.")
 
-
 # Carregar a última data de verificação do arquivo ou inicializar com o dia anterior
 def load_last_check_dates():
     try:
@@ -1371,7 +1216,6 @@ def load_last_check_dates():
         save_last_check_dates(last_check_dates)
         return last_check_dates
 
-
 # Salvar a última data de verificação no arquivo
 def save_last_check_dates(last_check_dates):
     with open(LAST_CHECK_FILE, "w") as f:
@@ -1386,7 +1230,6 @@ def save_last_check_dates(last_check_dates):
         }
         json.dump(last_check_data, f)
 
-
 # Carregar as últimas datas de verificação existentes
 last_check_dates = load_last_check_dates()
 
@@ -1395,13 +1238,11 @@ bot = telepot.aio.Bot(TELEGRAM_TOKEN)
 
 client_session = None
 
-
 async def init_client_session():
     global client_session
     client_session = aiohttp.ClientSession(  # Inicializar a sessão do cliente
         headers={"User-Agent": "Mozilla/5.0"}
     )
-
 
 # Configurar o loop de mensagens
 loop = asyncio.get_event_loop()
@@ -1411,5 +1252,5 @@ loop.create_task(
 loop.run_until_complete(init_client_session())
 # Iniciar o bot
 
-print("Bot iniciado. Aguardando comandos...")
+logger.info("Bot iniciado. Aguardando comandos...")
 loop.run_forever()

@@ -104,7 +104,7 @@ A geração automática de resumos representa um avanço significativo na forma 
    ```
 
 
-3. Configure as seguintes credenciais no script:
+3. Configure as seguintes credenciais no arquivo `config.py`:
 
 - **Token do Bot do Telegram:**: Obtenha um token criando um bot no Telegram através do BotFather.
 
@@ -124,14 +124,45 @@ A geração automática de resumos representa um avanço significativo na forma 
    ACCESS_TOKEN: "YOUR_TOKEN_OAUTH2_LINKEDIN"
    ```
 
-3. Instale as bibliotecas.
+4. Configure o arquivo de configuração de logging no arquivo `logging_config.py`:
+
+   ```python
+   import logging
+
+   # Create a custom logger
+   logger = logging.getLogger(__name__)
+
+   # Set the default logging level
+   logger.setLevel(logging.INFO)
+
+   # Create handlers
+   console_handler = logging.StreamHandler()
+   file_handler = logging.FileHandler('bot.log')
+
+   # Set the logging level for handlers
+   console_handler.setLevel(logging.INFO)
+   file_handler.setLevel(logging.INFO)
+
+   # Create formatters and add them to handlers
+   console_format = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+   file_format = logging.Formatter('%(asctime)s - %(name)s - %(levellevel)s - %(message)s')
+
+   console_handler.setFormatter(console_format)
+   file_handler.setFormatter(file_format)
+
+   # Add handlers to the logger
+   logger.addHandler(console_handler)
+   logger.addHandler(file_handler)
+   ```
+
+5. Instale as bibliotecas.
 
    ```bash
    pip install -r requirements.txt
    ```
 
 
-4. Abra o terminal ou prompt de comando e execute o script `LinkedinTelegramPostScheduleV5.py` para iniciar.
+6. Abra o terminal ou prompt de comando e execute o script `LinkedinTelegramPostScheduleV5.py` para iniciar.
 
    ```bash
    python LinkedinTelegramPostScheduleV5.py
