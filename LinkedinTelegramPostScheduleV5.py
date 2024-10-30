@@ -24,10 +24,7 @@ import logging
 from config import TELEGRAM_TOKEN, ACCESS_TOKEN, AZURE_API_BASE, AZURE_API_KEY, AZURE_REDUNDANCY_API_BASE, AZURE_REDUNDANCY_API_KEY, GPT_MODEL_TURBO
 from rss_feeds import feed_urls, feed_names
 from utils import remove_html_tags, get_open_graph_tags, translate_text, save_last_check_dates, load_last_check_dates, save_schedules, load_schedules, restore_schedules
-
-# Configurar o logger
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+from logging_config import logger
 
 # Variáveis globais para armazenar feeds RSS e artigos
 feed_updates = {}
